@@ -5,7 +5,7 @@ In an attempt to simplify the process of starting up new
 Node.js based projects, there exists two template projects
 to use as a foundation.
 
-The two projects are [node-web][web], a web server with express, and [node-api][api], a RESTful API. 
+The two projects are [node-web][web], a web server with express, and [node-api][api], a RESTful API.
 The node-web project use OpenID Connect and/or CAS as a mechanism for authorisation and authentication.
 
 #### Where can I find the template projects?
@@ -13,7 +13,7 @@ The node-web project use OpenID Connect and/or CAS as a mechanism for authorisat
 - [https://github.com/KTH/node-api.git][api]
 - [https://github.com/KTH/node-web.git][web]
 
-It's important that we try to make changes that affect the template projects in the template projects themselves 
+It's important that we try to make changes that affect the template projects in the template projects themselves
 to make sure that all other projects based on the templates get the good stuff.
 
 #### How do I use this template project for a project of my own?
@@ -151,3 +151,5 @@ or need tests, a simple `echo "ok"` will suffice.
 [tape]: https://github.com/substack/tape
 [sample-test]: test/unit/specs/sampleCtrl-test.js
 [swagger]: http://swagger.io/
+
+...
