@@ -14,7 +14,7 @@ const { safeGet } = require('safe-utils')
 const devPrefixPath = devDefaults('/api/kursinfo')
 const devSsl = devDefaults(false)
 const devPort = devDefaults(3001)
-const devMongodb = devDefaults('mongodb://localhost:27017/node')
+const devMongodb = devDefaults('mongodb://localhost:27017/kursinfo')
 
 // EXAMPLE: const devApiKeys = devDefaults('?name=devClient&apiKey=SET_YOUR_API_KEY&scope=write&scope=read')
 const devApiKeys = devDefaults('?name=devClient&apiKey=&scope=write&scope=read')
