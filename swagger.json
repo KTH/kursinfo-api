@@ -40,6 +40,86 @@
         }
       }
     },
+    "/v1/sellingInfo/{courseCode}/": {  
+      "get": { 
+         "operationId": "getSellingTextByCourseCode",
+         "summary": "Get selling info for a specific course",
+         "description": "Gets some form of data that only requires",
+         "parameters": [  
+            {  
+               "name":"courseCode",
+               "in":"path",
+               "description":"course code that has the selling text",
+               "required":true,
+               "type":"string"
+            }
+         ],
+         "tags":[  
+            "v1"
+         ],
+         "responses": {  
+            "200": {  
+               "description":"The requested data",
+               "schema":{  
+                  "$ref":"#/definitions/SellingInfo"
+               }
+            },
+            "default":{  
+               "description":"Unexpected error",
+               "schema":{  
+                  "$ref":"#/definitions/Error"
+               }
+            }
+         },
+         "security":{  
+            "api_key":[  
+               "read"
+            ]
+         }
+      },
+      "post": {
+        "operationId": "postSellingTextByCourseCode",
+        "summary": "Saves an object in the database",
+        "description": "Saves changes to an object in the database",
+        "parameters": [
+          {
+            "name": "courseCode",
+            "in": "path",
+            "description": "courseCode of the sellingText to save",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "sellingText",
+            "in": "body",
+            "description": "The sellingText to save",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/SellingInfo"
+            }
+          }
+        ],
+        "tags": [
+          "v1"
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful save"
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": {
+          "api_key": [
+            "write"
+          ]
+        }
+      }
+    },
     "/v1/data/{id}": {
       "get": {
         "operationId": "getDataById",
@@ -140,6 +220,18 @@
           "description": "Unique identifier representing some specific data"
         },
         "name": {
+          "type": "string",
+          "description": "Description of the data"
+        }
+      }
+    },
+    "SellingInfo": {
+      "properties": {
+        "courseCode": {
+          "type": "string",
+          "description": "Unique course identifier representing some specific data"
+        },
+        "sellingText": {
           "type": "string",
           "description": "Description of the data"
         }

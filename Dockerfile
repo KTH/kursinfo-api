@@ -1,7 +1,5 @@
 FROM kthse/kth-nodejs:9.11.0
 
-MAINTAINER KTH Webb "cortina.developers@kth.se"
-
 RUN mkdir -p /npm && \
     mkdir -p /application
 
@@ -30,4 +28,4 @@ ENV NODE_PATH /application
 
 EXPOSE 3001
 
-ENTRYPOINT ["node", "app.js"]
+CMD ["node", "app.js"]

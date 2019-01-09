@@ -14,7 +14,7 @@ if (nodeEnv === 'development' || nodeEnv === 'dev' || !nodeEnv) {
 // Now read the server config etc.
 const config = require('./configuration').server
 const AppRouter = require('kth-node-express-routing').PageRouter
-const getPaths = require('kth-node-express-routing').getPaths
+const { getPaths } = require('kth-node-express-routing')
 
 // Expose the server and paths
 server.locals.secret = new Map()
@@ -89,7 +89,7 @@ require('./database').connect()
  * ******* APPLICATION ROUTES *******
  * **********************************
  */
-const addPaths = require('kth-node-express-routing').addPaths
+const { addPaths } = require('kth-node-express-routing')
 const { createApiPaths, createSwaggerRedirectHandler, notFoundHandler, errorHandler } = require('kth-node-api-common')
 const swaggerData = require('../swagger.json')
 const { System } = require('./controllers')
@@ -120,16 +120,18 @@ addPaths('api', createApiPaths({
 const authByApiKey = passport.authenticate('apikey', { session: false })
 
 // Application specific API enpoints
-const { Sample } = require('./controllers')
-const ApiRouter = require('kth-node-express-routing').ApiRouter
+const { Sample, SellingInfo } = require('./controllers')
+const { ApiRouter } = require('kth-node-express-routing')
 const apiRoute = ApiRouter(authByApiKey)
 const paths = getPaths()
 
 // Api enpoints
 apiRoute.register(paths.api.checkAPIkey, System.checkAPIKey)
-
 apiRoute.register(paths.api.getDataById, Sample.getData)
 apiRoute.register(paths.api.postDataById, Sample.postData)
+
+apiRoute.register(paths.api.getSellingTextByCourseCode, SellingInfo.getData)
+apiRoute.register(paths.api.postSellingTextByCourseCode, SellingInfo.postData)
 server.use('/', apiRoute.getRouter())
 
 // Catch not found and errors
