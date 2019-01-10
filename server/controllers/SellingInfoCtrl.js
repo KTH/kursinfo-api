@@ -26,7 +26,7 @@ function * getData (req, res, next) {
     if (process.env.NODE_MOCK) {
       doc = yield { courseCode: 0, sellingText: 'mockSellingText' }
     } else {
-      doc = yield SellingInfo.findOne({ 'courseCode': req.params.courseCode })
+      doc = yield SellingInfo.findOne({ 'courseCode': req.params.courseCode.toUpperCase() })
     }
 
     if (!doc) {
@@ -41,13 +41,13 @@ function * getData (req, res, next) {
 
 function * postData (req, res, next) {
   try {
-    let doc = yield SellingInfo.findOne({ 'courseCode': req.params.courseCode })
+    let doc = yield SellingInfo.findOne({ 'courseCode': req.params.courseCode.toUpperCase() })
     console.log('=====================cD=========================', req.params.courseCode)
 
     if (!doc) {
       console.log('=====================SELLING INFO NOT FOUND=========================', req.params.courseCode)
       doc = new SellingInfo({
-        courseCode: req.params.courseCode,
+        courseCode: req.params.courseCode.toUpperCase(),
         sellingText: req.body.sellingText
       })
     } else {
@@ -55,7 +55,7 @@ function * postData (req, res, next) {
     }
 
     yield doc.save()
-    res.json({ courseCode: doc.courseCode, sellingText: doc.sellingText })
+    res.json({ courseCode: doc.courseCode.toUpperCase(), sellingText: doc.sellingText })
   } catch (err) {
     next(err)
   }
