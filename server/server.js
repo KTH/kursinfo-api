@@ -120,7 +120,7 @@ addPaths('api', createApiPaths({
 const authByApiKey = passport.authenticate('apikey', { session: false })
 
 // Application specific API enpoints
-const { Sample, SellingInfo } = require('./controllers')
+const { Sample, SellingInfo, ImageInfo, CourseWebLink } = require('./controllers')
 const { ApiRouter } = require('kth-node-express-routing')
 const apiRoute = ApiRouter(authByApiKey)
 const paths = getPaths()
@@ -130,8 +130,14 @@ apiRoute.register(paths.api.checkAPIkey, System.checkAPIKey)
 apiRoute.register(paths.api.getDataById, Sample.getData)
 apiRoute.register(paths.api.postDataById, Sample.postData)
 
+// SellingText
 apiRoute.register(paths.api.getSellingTextByCourseCode, SellingInfo.getData)
 apiRoute.register(paths.api.postSellingTextByCourseCode, SellingInfo.postData)
+// postImageInfo
+apiRoute.register(paths.api.postImageInfo, ImageInfo.postImageInfo)
+// postImageInfo
+apiRoute.register(paths.api.postCourseWebLink, CourseWebLink.postCourseWebLink)
+
 server.use('/', apiRoute.getRouter())
 
 // Catch not found and errors

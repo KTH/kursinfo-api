@@ -15,8 +15,7 @@ const sellingInfoSchema = mongoose.Schema({
     type: String,
     required: [false, 'If sellingText is added then short text will be hidden.'],
     trim: true,
-    minlength: [1, 'Text must have at least one character.'],
-    maxlength: [1000, 'Text must have at most 1000 characters.'],
+    maxlength: [2000, 'Text must have at most 2000 characters.'],
     default: ''
   }/*,
   language: String */
