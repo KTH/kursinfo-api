@@ -7,5 +7,10 @@ module.exports = {
   // Replace with actual API controller
   Sample: require('./sampleCtrl'),
 
-  SellingInfo: require('./SellingInfoCtrl')
+  SellingInfo: require('./SellingInfoCtrl'),
+
+  ImageInfo: require('./imageCtrl'),
+
+  CourseWebLink: require('./courseWebLink')
+
 }
