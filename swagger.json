@@ -43,7 +43,7 @@
     "/v1/sellingInfo/{courseCode}/": {  
       "get": { 
          "operationId": "getSellingTextByCourseCode",
-         "summary": "Get selling info for a specific course",
+         "summary": "Get selling info for a specific course, can be saved in 2 languages",
          "description": "Gets some form of data that only requires",
          "parameters": [  
             {  
@@ -61,7 +61,7 @@
             "200": {  
                "description":"The requested data",
                "schema":{  
-                  "$ref":"#/definitions/SellingInfo"
+                  "$ref":"#/definitions/CourseModel"
                }
             },
             "default":{  
@@ -90,12 +90,118 @@
             "type": "string"
           },
           {
-            "name": "sellingText",
+            "name": "sellingText_en",
             "in": "body",
-            "description": "The sellingText to save",
+            "description": "English sellingText to save",
             "required": false,
             "schema": {
-              "$ref": "#/definitions/SellingInfo"
+              "$ref": "#/definitions/CourseModel"
+            }
+          },
+          {
+            "name": "sellingText_sv",
+            "in": "body",
+            "description": "Swedish sellingText to save",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/CourseModel"
+            }
+          },
+          {
+            "name": "lang",
+            "in": "body",
+            "description": "The language of selling text, sv or en",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/CourseModel"
+            }
+          }
+        ],
+        "tags": [
+          "v1"
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful save"
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": {
+          "api_key": [
+            "write"
+          ]
+        }
+      }
+    },
+    "/v1/imageInfo/{courseCode}/": {
+      "post": {
+        "operationId": "postImageInfo",
+        "summary": "Saves a random image info in the database",
+        "description": "Saves changes to an object in the database",
+        "parameters": [
+          {
+            "name": "courseCode",
+            "in": "path",
+            "description": "courseCode of the imageInfo to save",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "imageInfo",
+            "in": "body",
+            "description": "The imageInfo to save",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/CourseModel"
+            }
+          }
+        ],
+        "tags": [
+          "v1"
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful save"
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": {
+          "api_key": [
+            "write"
+          ]
+        }
+      }
+    },
+    "/v1/courseWebLink/{courseCode}/": {
+      "post": {
+        "operationId": "postCourseWebLink",
+        "summary": "Saves a boolean flag isCourseWebLink in the database",
+        "description": "Saves a boolean flag isCourseWebLink in the database: true, false",
+        "parameters": [
+          {
+            "name": "courseCode",
+            "in": "path",
+            "description": "courseCode of the sellingText to save",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "isCourseWebLink",
+            "in": "body",
+            "description": "The isCourseWebLink to save",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/CourseModel"
             }
           }
         ],
@@ -234,6 +340,26 @@
         "sellingText": {
           "type": "string",
           "description": "Description of the data"
+        }
+      }
+    },
+    "CourseModel": {
+      "properties": {
+        "courseCode": {
+          "type": "string",
+          "description": "Unique course identifier representing some specific data"
+        },
+        "sellingText_en": {
+          "description": "Description of the data",
+          "schema": {
+            "$ref": "#/definitions/courseSchema"
+          }
+        },
+        "sellingText_se": {
+          "description": "Description of the data",
+          "schema": {
+            "$ref": "#/definitions/courseSchema"
+          }
         }
       }
     },
