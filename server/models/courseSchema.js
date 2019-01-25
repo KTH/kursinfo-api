@@ -15,7 +15,7 @@ module.exports = mongoose.Schema({
     required: [false, 'If sellingText is added then short text will be hidden.'],
     trim: true,
     minlength: 0,
-    maxlength: [5000, 'Text must have at most 5000 characters.'],
+    maxlength: [10000, 'Text must have at most 5000 characters.'],
     default: ''
   },
   sellingText_sv: {
@@ -23,7 +23,7 @@ module.exports = mongoose.Schema({
     required: [false, 'If sellingText is added then short text will be hidden.'],
     trim: true,
     minlength: 0,
-    maxlength: [5000, 'Text must have at most 5000 characters.'],
+    maxlength: [10000, 'Text must have at most 5000 characters.'],
     default: ''
   },
   imageInfo: { // TODO: om URL sanitize it
