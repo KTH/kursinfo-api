@@ -27,8 +27,16 @@ function * getData (req, res, next) {
       return next()
     }
 
-    // res.json({ courseCode: doc.courseCode, sellingText_sv: doc.sellingText_sv, sellingText_en: doc.sellingText_en, ImageInfo: doc.ImageInfo })
-    res.json(doc)
+    res.json({ courseCode: doc.courseCode,
+      sellingText: {
+        en: doc.sellingText_en,
+        sv: doc.sellingText_sv
+      },
+      sellingText_sv: doc.sellingText_sv, // ta bort
+      sellingText_en: doc.sellingText_en, // ta bort
+      imageInfo: doc.imageInfo,
+      isCourseWebLink: doc.isCourseWebLink })
+    // res.json(doc)
   } catch (err) {
     log.error('Failed to get a sellingText, error:', err)
     next(err)
@@ -37,23 +45,25 @@ function * getData (req, res, next) {
 
 function * postData (req, res, next) {
   try {
-    console.log('==Update selling text for course', req.params.courseCode, ', language: ', req.body.lang)
+    console.log('==Update selling text for course', req.params.courseCode)
     let doc = yield CourseModel.findOne({ 'courseCode': req.params.courseCode.toUpperCase() })
 
-    const textLangStr = `sellingText_${req.body.lang}`
+    const sellingTexts = req.body.sellingText
 
     if (!doc) {
       log.info('Selling info not found for a course: ', req.params.courseCode, 'and will try create a new')
       doc = new CourseModel({
         courseCode: req.params.courseCode.toUpperCase(),
-        [textLangStr]: req.body.sellingText
+        sellingText_sv: sellingTexts.sv,
+        sellingText_en: sellingTexts.en
       })
     } else {
-      doc[textLangStr] = req.body.sellingText
+      doc.sellingText_sv = sellingTexts.sv
+      doc.sellingText_en = sellingTexts.en
     }
 
     yield doc.save()
-    res.json({ courseCode: doc.courseCode.toUpperCase(), [textLangStr]: req.body.sellingText })
+    res.json({ courseCode: doc.courseCode.toUpperCase(), sellingTexts_en: sellingTexts.en, sellingText_sv: sellingTexts.sv })
   } catch (err) {
     log.error('Failed posting a sellingText, error:', err)
     next(err) // throw err

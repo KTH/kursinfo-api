@@ -106,15 +106,6 @@
             "schema": {
               "$ref": "#/definitions/CourseModel"
             }
-          },
-          {
-            "name": "lang",
-            "in": "body",
-            "description": "The language of selling text, sv or en",
-            "required": false,
-            "schema": {
-              "$ref": "#/definitions/CourseModel"
-            }
           }
         ],
         "tags": [

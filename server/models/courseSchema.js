@@ -36,15 +36,7 @@ module.exports = mongoose.Schema({
     required: false,
     default: false
   },
-  sellingTextAuthor_sv: {
-    type: String,
-    required: [false, 'If sellingText is added then short text will be hidden.'],
-    trim: true,
-    minlength: 0,
-    maxlength: [10, 'Text must have at most 10 characters.'],
-    default: ''
-  },
-  sellingTextAuthor_en: {
+  sellingTextAuthor: {
     type: String,
     required: [false, 'If sellingText is added then short text will be hidden.'],
     trim: true,
