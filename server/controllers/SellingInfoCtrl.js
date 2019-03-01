@@ -32,8 +32,6 @@ function * getData (req, res, next) {
         en: doc.sellingText_en,
         sv: doc.sellingText_sv
       },
-      sellingText_sv: doc.sellingText_sv, // ta bort
-      sellingText_en: doc.sellingText_en, // ta bort
       imageInfo: doc.imageInfo,
       isCourseWebLink: doc.isCourseWebLink })
     // res.json(doc)
