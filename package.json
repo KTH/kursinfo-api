@@ -16,6 +16,7 @@
     "test"
   ],
   "dependencies": {
+    "applicationinsights": "^1.2.0",
     "bluebird": "^3.5.3",
     "body-parser": "^1.15.2",
     "co": "^4.6.0",
