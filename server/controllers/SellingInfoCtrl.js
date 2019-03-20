@@ -64,7 +64,10 @@ function * postData (req, res, next) {
 
     yield doc.save()
     log.info('==Updated selling text for course', courseCode)
-    res.json({ courseCode: doc.courseCode.toUpperCase(), sellingTexts_en: sellingTexts.en, sellingText_sv: sellingTexts.sv })
+    res.json({ courseCode: doc.courseCode.toUpperCase(),
+      sellingTexts_en: sellingTexts.en,
+      sellingText_sv: sellingTexts.sv,
+      sellingTextAuthor: doc.sellingTextAuthor })
   } catch (err) {
     log.error('Failed posting a sellingText, error:', { err })
     next(err) // throw err

@@ -46,13 +46,16 @@ module.exports = mongoose.Schema({
   }
 }, { collection: 'courses-data', toJSON: { virtuals: true }, id: false })
 
-// module.exports.pre('validate', function (next) {
-//   if (this.sellingText) {
-//     ['sv', 'en'].forEach(lang => {
-//       if (safeGet(() => this.description[lang])) {
-//         this.description[lang] = sanitize(this.description[lang])
-//       }
-//     })
-//   }
-//   next()
-// })
+module.exports.pre('save', function (next) {
+  if (this.sellingText_en) {
+    if (safeGet(() => this.sellingText_en)) {
+      this.sellingText_en = sanitize(this.sellingText_en)
+    }
+  }
+  if (this.sellingText_sv) {
+    if (safeGet(() => this.sellingText_sv)) {
+      this.sellingText_sv = sanitize(this.sellingText_sv)
+    }
+  }
+  next()
+})
