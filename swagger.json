@@ -1,8 +1,8 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Node API",
-    "description": "Template API project for Node.js",
+    "title": "Kursinfo API",
+    "description": "Kursinfo API contains information about course introduction texts and image url for course description",
     "version": "1.0.0"
   },
   "basePath": "/api/kursinfo",
@@ -43,13 +43,13 @@
     "/v1/sellingInfo/{courseCode}/": {  
       "get": { 
          "operationId": "getSellingTextByCourseCode",
-         "summary": "Get selling info for a specific course, can be saved in 2 languages",
-         "description": "Gets some form of data that only requires",
+         "summary": "Get selling info for a specific course saved in 2 languages, author and image name",
+         "description": "Get selling info for a specific course saved in 2 languages, author and image name",
          "parameters": [  
             {  
                "name":"courseCode",
                "in":"path",
-               "description":"course code that has the selling text",
+               "description":"course code",
                "required":true,
                "type":"string"
             }
@@ -102,6 +102,15 @@
             "name": "sellingText_sv",
             "in": "body",
             "description": "Swedish sellingText to save",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/CourseModel"
+            }
+          },
+          {
+            "name": "imageInfo",
+            "in": "body",
+            "description": "Image name which was saved in a azure blob torage",
             "required": false,
             "schema": {
               "$ref": "#/definitions/CourseModel"
@@ -322,35 +331,31 @@
         }
       }
     },
-    "SellingInfo": {
-      "properties": {
-        "courseCode": {
-          "type": "string",
-          "description": "Unique course identifier representing some specific data"
-        },
-        "sellingText": {
-          "type": "string",
-          "description": "Description of the data"
-        }
-      }
-    },
     "CourseModel": {
+      "type": "object",
+      "required": [
+        "courseCode"
+        ],
       "properties": {
         "courseCode": {
           "type": "string",
-          "description": "Unique course identifier representing some specific data"
+          "description": "Unique course identifier representing course code, t.e, SF1624"
         },
         "sellingText_en": {
-          "description": "Description of the data",
-          "schema": {
-            "$ref": "#/definitions/courseSchema"
-          }
+          "type": "string",
+          "description": "English course introduction, html text"
         },
         "sellingText_se": {
-          "description": "Description of the data",
-          "schema": {
-            "$ref": "#/definitions/courseSchema"
-          }
+          "type": "string",
+          "description": "Swedish course introduction, html text"
+        },
+        "imageInfo": {
+          "type": "string",
+          "description": "The imageInfo to save, t.e., Picture_by_own_choice_SF1624.jpg"
+        },
+        "sellingTextAuthor": {
+          "type": "string",
+          "description": "The author's kthId to save"
         }
       }
     },

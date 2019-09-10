@@ -26,10 +26,11 @@ module.exports = mongoose.Schema({
     maxlength: [10000, 'Text must have at most 5000 characters.'],
     default: ''
   },
-  imageInfo: { // TODO: om URL sanitize it
+  imageInfo: {
     type: String,
     required: false,
-    trim: true
+    trim: true,
+    default: ''
   },
   isCourseWebLink: {
     type: Boolean,

@@ -47,16 +47,18 @@ function * postData (req, res, next) {
     const courseCode = req.params.courseCode.toUpperCase()
     let doc = yield CourseModel.findOne({ 'courseCode': courseCode })
     const sellingTexts = req.body.sellingText
-
+    log.info('Saving for a course: ', courseCode, 'Data: ', req.body)
     if (!doc) {
-      log.info('Selling info not found for a course: ', courseCode, 'and will try create a new')
+      log.info('Selling info was not found for the course: ', courseCode, 'therefore will try create a new')
       doc = new CourseModel({
         courseCode: courseCode,
+        imageInfo: req.body.imageInfo,
         sellingText_sv: sellingTexts.sv,
         sellingText_en: sellingTexts.en,
         sellingTextAuthor: req.body.sellingTextAuthor
       })
     } else {
+      doc.imageInfo = req.body.imageInfo
       doc.sellingText_sv = sellingTexts.sv
       doc.sellingText_en = sellingTexts.en
       doc.sellingTextAuthor = req.body.sellingTextAuthor
@@ -64,10 +66,14 @@ function * postData (req, res, next) {
 
     yield doc.save()
     log.info('==Updated selling text for course', courseCode)
-    res.json({ courseCode: doc.courseCode.toUpperCase(),
+    log.info('==Updated picture for course', courseCode, ' imageInfo ->', req.body.imageInfo)
+    res.json({
+      courseCode: doc.courseCode.toUpperCase(),
+      imageInfo: doc.imageInfo,
       sellingTexts_en: sellingTexts.en,
       sellingText_sv: sellingTexts.sv,
-      sellingTextAuthor: doc.sellingTextAuthor })
+      sellingTextAuthor: doc.sellingTextAuthor
+    })
   } catch (err) {
     log.error('Failed posting a sellingText, error:', { err })
     next(err) // throw err
