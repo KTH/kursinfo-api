@@ -4,27 +4,24 @@ const { CourseModel } = require('../models/courseModel')
 const co = require('co')
 const log = require('kth-node-log')
 
-// const { safeGet } = require('safe-utils')
-// const config = require('../configuration').server
-// const { BasicAPI } = require('kth-node-api-call')
-
 module.exports = {
   getData: co.wrap(getData),
   postData: co.wrap(postData)
 }
 
-function * getData (req, res, next) {
+async function getData (req, res) {
   try {
     const courseCode = req.params.courseCode.toUpperCase()
     let doc = {}
     if (process.env.NODE_MOCK) {
-      doc = yield { courseCode: 0, sellingText: 'mockSellingText' }
+      doc = await { courseCode: 0, sellingText: 'mockSellingText' }
     } else {
-      doc = yield CourseModel.findOne({ 'courseCode': courseCode })
+      doc = await CourseModel.findOne({ 'courseCode': courseCode })
     }
 
     if (!doc) {
-      return next()
+      log.info('Course is not yet in db so get empty data from kursinfo-api for course', courseCode)
+      return res.json()
     }
     log.info('Get data from kursinfo-api for course', courseCode)
     res.json({ courseCode: doc.courseCode,
@@ -38,14 +35,14 @@ function * getData (req, res, next) {
     // res.json(doc)
   } catch (err) {
     log.error('Failed to get a sellingText, error:', { err })
-    next(err)
+    return err
   }
 }
 
-function * postData (req, res, next) {
+async function postData (req, res) {
   try {
     const courseCode = req.params.courseCode.toUpperCase()
-    let doc = yield CourseModel.findOne({ 'courseCode': courseCode })
+    let doc = await CourseModel.findOne({ 'courseCode': courseCode })
     const sellingTexts = req.body.sellingText
     log.info('Saving for a course: ', courseCode, 'Data: ', req.body)
     if (!doc) {
@@ -64,7 +61,7 @@ function * postData (req, res, next) {
       doc.sellingTextAuthor = req.body.sellingTextAuthor
     }
 
-    yield doc.save()
+    await doc.save()
     log.info('==Updated selling text for course', courseCode)
     log.info('==Updated picture for course', courseCode, ' imageInfo ->', req.body.imageInfo)
     res.json({
@@ -76,6 +73,6 @@ function * postData (req, res, next) {
     })
   } catch (err) {
     log.error('Failed posting a sellingText, error:', { err })
-    next(err) // throw err
+    return err // throw err
   }
 }

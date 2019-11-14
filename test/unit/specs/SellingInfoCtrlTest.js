@@ -4,18 +4,18 @@
 const proxyquire = require('proxyquire')
 const expect = require('chai').expect
 function MockSample (doc) {
-  this._id = doc._id
-  this.name = doc.name
+  this.courseCode = doc.courseCode
+  this.sellingTexts_en = doc.sellingTexts_en
 }
 
-MockSample.findById = function (id) {
+MockSample.findById = function (courseCode) {
   let doc
 
-  if (id === '123') {
-    doc = new MockSample({ _id: id, name: 'foo' })
+  if (courseCode === '123') {
+    doc = new MockSample({ courseCode: courseCode, sellingTexts_en: 'foo' })
   }
 
-  if (id === 'fail') {
+  if (courseCode === 'fail') {
     return Promise.reject(new Error('error'))
   }
 
@@ -23,17 +23,17 @@ MockSample.findById = function (id) {
 }
 
 MockSample.prototype.save = function () {
-  if (this._id === '123' || this._id === 'abc') {
+  if (this.courseCode === '123' || this.courseCode === 'abc') {
     return Promise.resolve()
   }
 
   return Promise.reject(new Error('error'))
 }
 
-const sample = proxyquire('../../../server/controllers/sampleCtrl', {
+const sample = proxyquire('../../../server/controllers/SellingInfoCtrl', {
   '../models': {
-    sample: {
-      Sample: MockSample
+    courseModel: {
+      CourseModel: MockSample
     }
   }
 })
@@ -42,13 +42,13 @@ describe('Tests', function () {
   it('should getData ok', () => {
     const req = {
       params: {
-        id: '123'
+        courseCode: '123'
       }
     }
 
     const res = {
       json: (obj) => {
-        expect(obj.id).to.equal('123')
+        expect(obj.courseCode).to.equal('123')
       }
     }
 
@@ -62,7 +62,7 @@ describe('Tests', function () {
   it('should handle getData not found', () => {
     const req = {
       params: {
-        id: 'abc'
+        courseCode: 'abc'
       }
     }
 
@@ -82,7 +82,7 @@ describe('Tests', function () {
   it('should handle getData fail', () => {
     const req = {
       params: {
-        id: 'fail'
+        courseCode: 'fail'
       }
     }
 
@@ -102,16 +102,16 @@ describe('Tests', function () {
   it('should postData update ok', () => {
     const req = {
       params: {
-        id: '123'
+        courseCode: '123'
       },
       body: {
-        name: 'foo'
+        sellingTexts_en: 'foo'
       }
     }
 
     const res = {
       json: (obj) => {
-        expect(obj.id).to.equal('123')
+        expect(obj.courseCode).to.equal('123')
       }
     }
 
@@ -125,7 +125,7 @@ describe('Tests', function () {
   it('should postData create ok', () => {
     const req = {
       params: {
-        id: 'abc'
+        courseCode: 'abc'
       },
       body: {
         name: 'foo'
@@ -134,7 +134,7 @@ describe('Tests', function () {
 
     const res = {
       json: (obj) => {
-        expect(obj.id).to.equal('abc')
+        expect(obj.courseCode).to.equal('abc')
       }
     }
 
@@ -148,7 +148,7 @@ describe('Tests', function () {
   it('should handle postData fail', () => {
     const req = {
       params: {
-        id: 'fail'
+        courseCode: 'fail'
       },
       body: {
         name: 'foo'
