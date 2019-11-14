@@ -132,15 +132,13 @@ addPaths('api', createApiPaths({
 const authByApiKey = passport.authenticate('apikey', { session: false })
 
 // Application specific API enpoints
-const { Sample, SellingInfo, ImageInfo, CourseWebLink } = require('./controllers')
+const { SellingInfo, ImageInfo, CourseWebLink } = require('./controllers')
 const { ApiRouter } = require('kth-node-express-routing')
 const apiRoute = ApiRouter(authByApiKey)
 const paths = getPaths()
 
 // Api enpoints
 apiRoute.register(paths.api.checkAPIkey, System.checkAPIKey)
-apiRoute.register(paths.api.getDataById, Sample.getData)
-apiRoute.register(paths.api.postDataById, Sample.postData)
 
 // SellingText
 apiRoute.register(paths.api.getSellingTextByCourseCode, SellingInfo.getData)
