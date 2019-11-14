@@ -20,7 +20,8 @@ async function getData (req, res) {
     }
 
     if (!doc) {
-      return
+      log.info('Course is not yet in db so get empty data from kursinfo-api for course', courseCode)
+      return res.json()
     }
     log.info('Get data from kursinfo-api for course', courseCode)
     res.json({ courseCode: doc.courseCode,

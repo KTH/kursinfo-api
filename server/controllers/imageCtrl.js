@@ -20,7 +20,8 @@ async function getImageInfo (req, res) {
     }
 
     if (!doc) {
-      return
+      log.debug('Course is not yet in db so get empty data from kursinfo-api for course', req.params.courseCode)
+      return res.json()
     }
 
     res.json({ courseCode: doc.courseCode, ImageInfo: doc.ImageInfo })
