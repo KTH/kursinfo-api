@@ -9,14 +9,14 @@ module.exports = {
   postData: co.wrap(postData)
 }
 
-async function getData (req, res) {
+async function getData (req, res, done) {
   try {
     const courseCode = req.params.courseCode.toUpperCase()
     let doc = {}
     if (process.env.NODE_MOCK) {
       doc = await { courseCode: 0, sellingText: 'mockSellingText' }
     } else {
-      doc = await CourseModel.findOne({ 'courseCode': courseCode })
+      doc = await CourseModel.findOne({ 'courseCode': courseCode }, (err, data) => err ? done(err) : done(null, data))
     }
 
     if (!doc) {
