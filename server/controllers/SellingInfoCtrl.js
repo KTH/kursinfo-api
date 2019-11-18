@@ -16,7 +16,7 @@ async function getData (req, res, done) {
     if (process.env.NODE_MOCK) {
       doc = await { courseCode: 0, sellingText: 'mockSellingText' }
     } else {
-      doc = await CourseModel.findOne({ 'courseCode': courseCode }, (err, data) => err ? done(err) : done(null, data))
+      doc = await CourseModel.findOne({ 'courseCode': courseCode })
     }
 
     if (!doc) {

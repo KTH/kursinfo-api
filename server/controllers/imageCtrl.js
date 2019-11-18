@@ -9,14 +9,14 @@ module.exports = {
   postImageInfo: co.wrap(postImageInfo)
 }
 
-async function getImageInfo (req, res) {
+async function getImageInfo (req, res, done) {
   try {
     log.debug('==Course Code=', req.params.courseCode)
     let doc = {}
     if (process.env.NODE_MOCK) {
       doc = await { courseCode: 0, sellingText: 'mockSellingText' }
     } else {
-      doc = await CourseModel.findOne({ 'courseCode': req.params.courseCode.toUpperCase() })
+      doc = CourseModel.findOne({ 'courseCode': req.params.courseCode.toUpperCase() })
     }
 
     if (!doc) {
