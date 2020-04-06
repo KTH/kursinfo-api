@@ -35,7 +35,7 @@
     "kth-node-monitor": "^0.1.19",
     "kth-node-response": "KTH/kth-node-response.git#v1.0.0",
     "kth-node-server": "^3.1.1",
-    "mongoose": "^4.5.8",
+    "mongoose": "^5.7.5",
     "passport": "^0.4.0",
     "safe-utils": "0.2.1",
     "sanitize-html": "^1.20.0",
