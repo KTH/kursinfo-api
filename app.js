@@ -26,5 +26,5 @@ module.exports = server.start({
   ca: config.ssl.ca,
   cert: config.ssl.cert,
   port: config.port,
-  logger: log
+  logger: log,
 })
