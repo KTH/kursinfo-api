@@ -7,21 +7,18 @@ const nodeMongo = require('kth-node-mongo')
 const mongoOptions = {
   user: config.db.username,
   pass: config.db.password,
-  server: {
-    authenticationDatabase: config.db.authDatabase,
-    ssl: config.db.ssl
-  },
-  maxPoolSize: 5,
-  dbUri: config.db.uri,
-  logger: log
+  ssl: config.db.ssl,
+  dbUri: config.db.authDatabase !== '' ? config.db.uri + `?authSource=${config.db.authDatabase}` : config.db.uri,
+  logger: log,
 }
 
-module.exports.connect = function () {
-  nodeMongo.connect(mongoOptions)
+module.exports.connect = function connect() {
+  nodeMongo
+    .connect(mongoOptions)
     .then(data => {
-      log.info({ data: data }, 'MongoDB: connected')
+      log.info({ data }, 'MongoDB: connected')
     })
     .catch(err => {
-      log.error({ err: err }, 'MongoDB: ERROR connecting DB')
+      log.error({ err }, 'MongoDB: ERROR connecting DB')
     })
 }

@@ -23,7 +23,7 @@ const devApiKeys = devDefaults('?name=devClient&apiKey=1234&scope=write&scope=re
 module.exports = {
   // The proxy prefix path if the application is proxied. E.g /places
   proxyPrefixPath: {
-    uri: getEnv('SERVICE_PUBLISH', devPrefixPath)
+    uri: getEnv('SERVICE_PUBLISH', devPrefixPath),
   },
   useSsl: safeGet(() => getEnv('SERVER_SSL', devSsl + '').toLowerCase() === 'true'),
   port: getEnv('SERVER_PORT', devPort),
@@ -31,7 +31,7 @@ module.exports = {
   ssl: {
     // In development we don't have SSL feature enabled
     pfx: getEnv('SERVER_CERT_FILE', ''),
-    passphrase: getEnv('SERVER_CERT_PASSPHRASE', '')
+    passphrase: getEnv('SERVER_CERT_PASSPHRASE', ''),
   },
 
   // API keys
@@ -43,15 +43,15 @@ module.exports = {
   // Logging
   logging: {
     log: {
-      level: getEnv('LOGGING_LEVEL', 'debug')
+      level: getEnv('LOGGING_LEVEL', 'debug'),
     },
     accessLog: {
-      useAccessLog: safeGet(() => getEnv('LOGGING_ACCESS_LOG'), 'true') === 'true'
-    }
+      useAccessLog: safeGet(() => getEnv('LOGGING_ACCESS_LOG'), 'true') === 'true',
+    },
   },
 
   // Custom app settings
   appInsights: {
-    instrumentationKey: getEnv('APPINSIGHTS_INSTRUMENTATIONKEY')
-  }
+    instrumentationKey: getEnv('APPINSIGHTS_INSTRUMENTATIONKEY'),
+  },
 }
