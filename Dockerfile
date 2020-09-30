@@ -1,4 +1,4 @@
-FROM kthse/kth-nodejs:9.11.0
+FROM kthse/kth-nodejs:12.0.0
 
 RUN mkdir -p /npm && \
     mkdir -p /application
