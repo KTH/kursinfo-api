@@ -1,155 +1,146 @@
-# Node-api
-## Template project for RESTful API:s
+# Welcome to kursinfo-api 👋
 
-In an attempt to simplify the process of starting up new
-Node.js based projects, there exists two template projects
-to use as a foundation.
+![Version](https://img.shields.io/badge/version-0.8.0-blue.svg?cacheSeconds=2592000)
+![Prerequisite](https://img.shields.io/badge/node-12.0.0-blue.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#)
 
-The two projects are [node-web][web], a web server with express, and [node-api][api], a RESTful API.
-The node-web project use OpenID Connect and/or CAS as a mechanism for authorisation and authentication.
+## Introduction
 
-#### Where can I find the template projects?
+The course information project (KIP) is an initiative at KTH that was launched in 2018 to improve the quality and availability of information about KTH:s courses. The background to the project is, among other things, that it was difficult for the student to find information about the courses and even more difficult to compare information about several courses. The reason for the problems is scattered course information in several places and that there is no uniformity or assigned places for the course information. The project takes measures to consolidate course information into two locations and to present the information in a manner that is uniform for KTH. The student should find the right information about the course, depending on their needs. The result of the project is a public course site where the correct course information is collected and presented uniformly. Also, a tool is developed for teachers to enter and publish course information. Eventually, this will lead to the student making better decisions based on their needs, and it will also reduce the burden on teachers and administration regarding questions and support for the student.
 
-- [https://github.com/KTH/node-api.git][api]
-- [https://github.com/KTH/node-web.git][web]
+Kursinfo-api is a microservice to save course's short description and image to database. It accepts data from kursinfo admin pages "Administrate About course information
+"([kursinfo-admin-web](https://github.com/KTH/kursinfo-admin-web)) and serves this data to the public view of:
+- "Before choosing course"([kursinfo-web](https://github.com/KTH/kursinfo-web))
+- To show course memo information ([kurs-pm-web](https://github.com/KTH/kurs-pm-web))
+- To show in preview mode in course memo data admin web ([kurs-pm-data-admin-web](https://github.com/KTH/kurs-pm-data-admin-web))
 
-It's important that we try to make changes that affect the template projects in the template projects themselves
-to make sure that all other projects based on the templates get the good stuff.
+It uses [Node.js](https://nodejs.org/), [Mongoose](https://mongoosejs.com/), `kth-node-mongo`, and is based on [node-api](https://github.com/KTH/node-api).
 
-#### How do I use this template project for a project of my own?
+### 🏠 [Homepage](https://github.com/KTH/kursinfo-api)
 
-1. Create a new repository on Gita or Github.
-2. Clone the newly created repository locally by using:
+## Overview
 
-   ```bash
-   git clone git@github.com:KTH/node-api.git NEW_REPOSITORY_NAME
-   ```
-  Make sure that your .git/config file is pointing to the new NEW_REPOSITORY_NAME
+Kursinfo-api is used to save data in a Azure Cosmos database by using `kth-node-mongo` to establish a connection to Azure (`server/database.js`). Before using it, the database and collection must be prepared in Azure because it will establish a connection to an existing database, and not try to create it from a code. `Mongoose` is used for creating models and saving data. To present a documentation [Swagger](https://swagger.io/) is used.
 
-3. Navigate to the cloned project directory
+Admin and public pages uses different rights and keys to separate their behaviour (write/read).
 
-### How to configure the applications
+Only admin pages may change API data while public pages can only read. Therefore while using `Swagger`, a developer should choose the correct api key, because some functions will not be shown in details.
+
+### Connected Projects
+- [kurs-pm-data-admin-web](https://github.com/KTH/kurs-pm-data-admin-web)
+- [kurs-pm-web](https://github.com/KTH/kurs-pm-web)
+- [kurs-pm-data-admin-web](https://github.com/KTH/kurs-pm-data-admin-web)
+
+### Related Projects
+- [node-api](https://github.com/KTH/node-api)
+
+## Prerequisites
+
+- Node.js 12.0.0
+- Ansible Vault
+
+### Secrets for Development
+
+Secrets during local development are ALWAYS stored in a `.env`-file in the root of your project. This file should be in .gitignore. It needs to contain at least ldap connection URI and password in order for authentication to work properly.
 
 ```
-# Logging
-LOGGING_ACCESS_LOG=/Users/hoyce/repos/github/node-api/logs
+MONGODB_URI=mongodb://kursinfo-api-stage-mongodb-kthse:[password, specified in Azure]==@kursinfo-api-stage-mongodb-kthse.documents.azure.com:[port, specified in Azure]/admin?ssl=true&authSource=admin
+API_KEYS_0=?name=kursinfo-web&apiKey=[generate a password for public pages]&scope=read
+API_KEYS_1=?name=kurs-pm-web&apiKey=[generate a password for public pages]&scope=read
+API_KEYS_2=?name=kursinfo-admin-web&apiKey=[generate a password for admin page]&scope=write&scope=read
+API_KEYS_3=?name=kurs-pm-data-admin-web&apiKey=[generate a password for admin page]&scope=write&scope=read
+APPINSIGHTS_INSTRUMENTATIONKEY=[Azure, Application insights, Instrumentation Key, can be found in Overview]
+USE_COSMOS_DB='true'
+LOGGING_ACCESS_LOG=debug
+SERVER_PORT=3001 [if you want to change port]
 ```
 
-Set your basePath property in `swagger.json`:
+These settings are also available in an `env.in` file.
+
+## Prepara Database in Azure
+
+Create database `admin` and advisible manually set Throughput: 400 (Shared)(Today it is 1000).
+Name of database will be used in a connection string.
+In this database create a collection `courses-data`.
+Change a connection string:
+
+`mongodb://kursinfo-api-stage-mongodb-kthse:[password]==@kursinfo-api-stage-mongodb-kthse.documents.azure.com:[port]`~~/?ssl=true&replicaSet=globaldb~~`/admin?ssl=true&authSource=admin`
+
+## For Development
+
+### Install
+
+```sh
+npm install
+```
+
+### Usage
+
+Start the service on [localhost:3001/api/kursinfo/swagger](http://localhost:3001/api/kursinfo/swagger).
+
+```sh
+npm run start-dev
+```
+
+## In Production
+
+Secrets and docker-compose are located in cellus-registry.
+
+## Run tests
+
+```sh
+npm run test
+```
+
+## Monitor and Dashboards
+
+### Application Status
+
+[localhost:3001/api/kurs-pm-data/\_monitor](http://localhost:3001/api/kurs-pm-data/_monitor)
+
+### Branch Information
+
+[localhost:3001/api/kurs-pm-data/\_about](http://localhost:3001/api/kurs-pm-data/_about)
+
+### Application Insights
+
+To see more detailed behaviour in project, use `Application Insights`, e.g., `kursinfo-web-stage-application-insights-kthse`.
+
+## Use 🐳
+
+Copy `docker-compose.yml.in` to `docker-compose.yml` and make necessary changes, if any.
+
+```sh
+docker-compose up
+```
+
+## Deploy in Stage
+
+The deployment process is described in [Build, release, deploy](https://confluence.sys.kth.se/confluence/x/aY3_Ag). Technical details, such as configuration, is described in [How to deploy your 🐳 application using Cellus-Registy](https://gita.sys.kth.se/Infosys/cellus-registry/blob/master/HOW-TO-DEPLOY.md) and [🔧 How To Configure Your Application For The Pipeline](https://gita.sys.kth.se/Infosys/cellus-registry/blob/master/HOW-TO-CONFIGURE.md).
+
+### Edit secrets.env
+
+```sh
+ansible-vault edit secrets.env
+```
+
+Password find in gsv-key vault
+
+### Configure secrets.env
 
 ```
-{
-  "swagger": "2.0",
-  "info": {
-  "title": "Node API",
-    "description": "Template API project for Node.js",
-    "version": "1.0.0"
-  },
-  "basePath": "/api/node/v1",
+MONGODB_URI=mongodb://kursinfo-api-stage-mongodb-kthse:[password, specified in Azure]==@kursinfo-api-stage-mongodb-kthse.documents.azure.com:[port, specified in Azure]/admin?ssl=true&authSource=admin
+API_KEYS_0=?name=kursinfo-web&apiKey=[generate a password for public pages]&scope=read
+API_KEYS_1=?name=kurs-pm-web&apiKey=[generate a password for public pages]&scope=read
+API_KEYS_2=?name=kursinfo-admin-web&apiKey=[generate a password for admin page]&scope=write&scope=read
+API_KEYS_3=?name=kurs-pm-data-admin-web&apiKey=[generate a password for admin page]&scope=write&scope=read
+APPINSIGHTS_INSTRUMENTATIONKEY=[Azure, Application insights, Instrumentation Key, can be found in Overview]
 ```
 
-Please, remember to set path to match your application.
 
-#### What is `swagger-ui`?
+## Author
 
-The `swagger-ui` package is simply used to provide a basic UI for
-testing the API. It is not directly required in the code, which
-means running checks like `npm-check` will claim it is unused.
-It cannot be stressed enough, **do not remove this package**!
+👤 **KTH**
 
-#### What can I customize?
-
-Follow the instructions for the files and folders below. For
-any files and folders not listed, avoid editing them in a your
-custom project.
-
-- `server/models/`
-
-  Anything in this folder can be edited to fit your project.
-  You can safely remove the `sample.js` file and add your own
-  mongoose-based schemas and models.
-
-- `server/init/routing/sampleRoutes.js`
-
-  This file contains routing config for the sample controller.
-  You can either rename or remove this file. Other files in this
-  folder should only be edited in the template project. The paths
-  for the routes come from the `swagger.json` file.
-
-- `server/controllers/sampleCtrl.js`
-
-  This file contains the sample controller. You can either rename
-  or remove this file. You can add your own controllers to this
-  folder. Remember to add your custom controllers to the `index.js`
-  file.
-
-- `swagger.json`
-
-  This file contains the API configuration and documentation.
-  You should add your own paths to this file. See the [Swagger
-  website][swagger] for documentation on the `swagger.json` format.
-
-- `start.sh` and `stop.sh`
-
-  Make sure to update the project name in these files.
-
-- `package.json`
-
-  Update the project name and add any dependencies you need.
-  Excluding the testing scripts, avoid editing the scripts.
-
-- `server/server.js`
-
-  Add additional startup code to the init callback.
-
-- `test/`
-
-  As explained below, you can completely remove all tests if
-  you like. If you want to use testing in your project, here's
-  the recommended place to put your test files.
-
-- `server/lib/`
-
-  Here you can put custom code that does not fit in any other
-  place. Though do not edit the `routing.js` file.
-
-- `config/`
-
-  Any and all configuration goes here. In particular you must
-  edit the `commonSettings.js` file to match your project's
-  proxy prefix path (i.e. `/api/node`). Other files you may
-  want to edit are the environment specific files for the
-  database connection config. Finally the `localSettings.js`
-  file should never be checked into source control as it's
-  used to contain sensitive information. You can also
-  override other settings in this file.
-
-- `.gitignore`
-
-#### Common errors
-
-When trying to run node-api as a standalone you might encounter the following error:
-```
-return binding.open(pathModule._makeLong(path), stringToFlags(flags), mode);
-```
-This is because the SSL information is incorrect in localSettings.js. Set ```useSsl: false``` to avoid this.
-
-
-#### Testing
-
-The template project uses a [sample setup][sample-test] for
-tests using [tape][tape]. It is not required to use this test
-harness in your projects. Simply remove the sample code and
-any reference to it in your project's `package.json` file.
-
-Keep in mind that you still need to provide a working npm
-script for `npm test` for the build server. If you don't want
-or need tests, a simple `echo "ok"` will suffice.
-
-[api]: https://github.com/KTH/node-api
-[web]: https://github.com/KTH/node-web
-[tape]: https://github.com/substack/tape
-[sample-test]: test/unit/specs/sampleCtrl-test.js
-[swagger]: http://swagger.io/
-
-...
+- Website: https://kth.github.io/
+- Github: [@KTH](https://github.com/KTH)
