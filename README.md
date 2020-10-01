@@ -96,11 +96,11 @@ npm run test
 
 ### Application Status
 
-[localhost:3001/api/kurs-pm-data/\_monitor](http://localhost:3001/api/kurs-pm-data/_monitor)
+[localhost:3001/api/kursinfo/\_monitor](http://localhost:3001/api/kursinfo/_monitor)
 
 ### Branch Information
 
-[localhost:3001/api/kurs-pm-data/\_about](http://localhost:3001/api/kurs-pm-data/_about)
+[localhost:3001/api/kursinfo/\_about](http://localhost:3001/api/kursinfo/_about)
 
 ### Application Insights
 
