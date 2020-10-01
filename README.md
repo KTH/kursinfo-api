@@ -27,7 +27,8 @@ Admin and public pages uses different rights and keys to separate their behaviou
 Only admin pages may change API data while public pages can only read. Therefore while using `Swagger`, a developer should choose the correct api key, because some functions will not be shown in details.
 
 ### Connected Projects
-- [kurs-pm-data-admin-web](https://github.com/KTH/kurs-pm-data-admin-web)
+- [kursinfo-web](https://github.com/KTH/kursinfo-web)
+- [kursinfo-admin-web](https://github.com/KTH/kursinfo-admin-web)
 - [kurs-pm-web](https://github.com/KTH/kurs-pm-web)
 - [kurs-pm-data-admin-web](https://github.com/KTH/kurs-pm-data-admin-web)
 
