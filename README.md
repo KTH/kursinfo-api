@@ -42,8 +42,7 @@ Only admin pages may change API data while public pages can only read. Therefore
 
 ### Secrets for Development
 
-Secrets during local development are ALWAYS stored in a `.env`-file in the root of your project. This file should be in .gitignore. It needs to contain at least ldap connection URI and password in order for authentication to work properly.
-
+Secrets during local development are ALWAYS stored in a `.env`-file in the root of your project. This file should be in .gitignore. This file should be in .gitignore. MONGODB_URI is usually uses db in azure, but it also goes to use localhost mongo, it have a default value in `config/serverSettings.js`
 ```
 MONGODB_URI=mongodb://kursinfo-api-stage-mongodb-kthse:[password, specified in Azure]==@kursinfo-api-stage-mongodb-kthse.documents.azure.com:[port, specified in Azure]/admin?ssl=true&authSource=admin
 API_KEYS_0=?name=kursinfo-web&apiKey=[generate a password for public pages]&scope=read
@@ -58,7 +57,7 @@ SERVER_PORT=3001 [if you want to change port]
 
 These settings are also available in an `env.in` file.
 
-## Prepara Database in Azure
+## Prepare Database in Azure
 
 Create database `admin` and advisible manually set Throughput: 400 (Shared)(Today it is 1000).
 Name of database will be used in a connection string.
