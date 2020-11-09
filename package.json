@@ -8,8 +8,8 @@
   "scripts": {
     "codecheck": "pretty-quick",
     "test-ci": "is-ci \"test\" \"test:watch\"",
-    "test": "jest --passWithNoTests",
-    "test:watch": "jest --watch",
+    "test": "NODE_ENV=test jest test/unit/*.js",
+    "test:watch": "NODE_ENV=test jest test/unit/*.js --watch",
     "start": "NODE_ENV=production node app.js",
     "start-dev": "cross-env NODE_ENV=development nodemon app.js"
   },

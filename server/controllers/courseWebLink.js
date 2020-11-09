@@ -25,7 +25,7 @@ async function postCourseWebLink(req, res) {
     await doc.save()
     res.json({ courseCode: doc.courseCode.toUpperCase(), isCourseWebLink })
   } catch (err) {
-    log.error('Failed posting a ImageInfo, error:', err)
+    log.error('Failed posting a isCourseWebLink, error:', err)
     return err // throw err
   }
 }

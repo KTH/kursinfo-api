@@ -10,8 +10,8 @@ async function getData(req, res) {
   try {
     const courseCode = req.params.courseCode.toUpperCase()
     let doc = {}
-    if (process.env.NODE_MOCK) {
-      doc = await { courseCode: 0, sellingText: 'mockSellingText' }
+    if (process.env.NODE_ENV === 'test') {
+      doc = await { courseCode, sellingText_sv: 'mockSellingText', sellingText_en: 'caffe moca' }
     } else {
       doc = await CourseModel.findOne({ courseCode })
     }
