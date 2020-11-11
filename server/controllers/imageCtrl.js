@@ -21,7 +21,7 @@ async function getImageInfo(req, res) {
 
     res.json({ courseCode: doc.courseCode, ImageInfo: doc.ImageInfo })
   } catch (err) {
-    log.error('Failed to get a sellingText, error:', err)
+    log.error('Failed to get a ImageInfo, error:', err)
     return err
   }
 }
