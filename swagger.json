@@ -6,9 +6,7 @@
     "version": "1.0.0"
   },
   "basePath": "/api/kursinfo",
-  "produces": [
-    "application/json"
-  ],
+  "produces": ["application/json"],
   "paths": {
     "/_checkAPIkey": {
       "get": {
@@ -16,9 +14,7 @@
         "summary": "GET a test endpoint that is protected by api key to validate that consumer has a proper api key",
         "description": "",
         "parameters": [],
-        "tags": [
-          "system"
-        ],
+        "tags": ["system"],
         "responses": {
           "200": {
             "description": "An empty response",
@@ -33,49 +29,47 @@
             }
           }
         },
-        "security": {
-          "api_key": [
-            "read"
-          ]
-        }
+        "security": [
+          {
+            "api_key": ["read"]
+          }
+        ]
       }
     },
-    "/v1/sellingInfo/{courseCode}/": {  
-      "get": { 
-         "operationId": "getSellingTextByCourseCode",
-         "summary": "Get selling info for a specific course saved in 2 languages, author and image name",
-         "description": "Get selling info for a specific course saved in 2 languages, author and image name",
-         "parameters": [  
-            {  
-               "name":"courseCode",
-               "in":"path",
-               "description":"course code",
-               "required":true,
-               "type":"string"
+    "/v1/sellingInfo/{courseCode}/": {
+      "get": {
+        "operationId": "getSellingTextByCourseCode",
+        "summary": "Get selling info for a specific course saved in 2 languages, author and image name",
+        "description": "Get selling info for a specific course saved in 2 languages, author and image name",
+        "parameters": [
+          {
+            "name": "courseCode",
+            "in": "path",
+            "description": "course code",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": ["v1"],
+        "responses": {
+          "200": {
+            "description": "The requested data",
+            "schema": {
+              "$ref": "#/definitions/CourseModel"
             }
-         ],
-         "tags":[  
-            "v1"
-         ],
-         "responses": {  
-            "200": {  
-               "description":"The requested data",
-               "schema":{  
-                  "$ref":"#/definitions/CourseModel"
-               }
-            },
-            "default":{  
-               "description":"Unexpected error",
-               "schema":{  
-                  "$ref":"#/definitions/Error"
-               }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
             }
-         },
-         "security":{  
-            "api_key":[  
-               "read"
-            ]
-         }
+          }
+        },
+        "security": [
+          {
+            "api_key": ["read"]
+          }
+        ]
       },
       "post": {
         "operationId": "postSellingTextByCourseCode",
@@ -117,9 +111,7 @@
             }
           }
         ],
-        "tags": [
-          "v1"
-        ],
+        "tags": ["v1"],
         "responses": {
           "200": {
             "description": "A successful save"
@@ -131,11 +123,11 @@
             }
           }
         },
-        "security": {
-          "api_key": [
-            "write"
-          ]
-        }
+        "security": [
+          {
+            "api_key": ["write"]
+          }
+        ]
       }
     },
     "/v1/imageInfo/{courseCode}/": {
@@ -161,9 +153,7 @@
             }
           }
         ],
-        "tags": [
-          "v1"
-        ],
+        "tags": ["v1"],
         "responses": {
           "200": {
             "description": "A successful save"
@@ -175,11 +165,11 @@
             }
           }
         },
-        "security": {
-          "api_key": [
-            "write"
-          ]
-        }
+        "security": [
+          {
+            "api_key": ["write"]
+          }
+        ]
       }
     },
     "/v1/courseWebLink/{courseCode}/": {
@@ -205,9 +195,7 @@
             }
           }
         ],
-        "tags": [
-          "v1"
-        ],
+        "tags": ["v1"],
         "responses": {
           "200": {
             "description": "A successful save"
@@ -219,11 +207,11 @@
             }
           }
         },
-        "security": {
-          "api_key": [
-            "write"
-          ]
-        }
+        "security": [
+          {
+            "api_key": ["write"]
+          }
+        ]
       }
     },
     "/v1/data/{id}": {
@@ -240,9 +228,7 @@
             "type": "string"
           }
         ],
-        "tags": [
-          "v1"
-        ],
+        "tags": ["v1"],
         "responses": {
           "200": {
             "description": "The requested data",
@@ -257,11 +243,11 @@
             }
           }
         },
-        "security": {
-          "api_key": [
-            "read"
-          ]
-        }
+        "security": [
+          {
+            "api_key": ["read"]
+          }
+        ]
       },
       "post": {
         "operationId": "postDataById",
@@ -285,9 +271,7 @@
             }
           }
         ],
-        "tags": [
-          "v1"
-        ],
+        "tags": ["v1"],
         "responses": {
           "200": {
             "description": "A successful save"
@@ -299,11 +283,11 @@
             }
           }
         },
-        "security": {
-          "api_key": [
-            "write"
-          ]
-        }
+        "security": [
+          {
+            "api_key": ["write"]
+          }
+        ]
       }
     }
   },
@@ -333,9 +317,7 @@
     },
     "CourseModel": {
       "type": "object",
-      "required": [
-        "courseCode"
-        ],
+      "required": ["courseCode"],
       "properties": {
         "courseCode": {
           "type": "string",
