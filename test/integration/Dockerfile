@@ -1,5 +1,5 @@
 FROM kthse/kth-nodejs:14.0.0
-LABEL maintainer="KTH-Webb web-developers@kth.se"
+LABEL maintainer="KTH StudAdm studadm.developers@kth.se"
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.7.3/wait /wait
 RUN chmod +x /wait

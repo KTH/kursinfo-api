@@ -1,4 +1,5 @@
 FROM kthse/kth-nodejs:14.0.0
+LABEL maintainer="KTH StudAdm studadm.developers@kth.se"
 
 RUN mkdir -p /npm && \
     mkdir -p /application
