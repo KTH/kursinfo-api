@@ -20,14 +20,14 @@ module.exports = {
   robotsTxt: getRobotsTxt,
   paths: getPathsHandler,
   checkAPIKey: checkAPIKey,
-  swagger: getSwagger
+  swagger: getSwagger,
 }
 
 /**
  * GET /swagger.json
  * Swagger config
  */
-function getSwagger (req, res) {
+function getSwagger(req, res) {
   res.json(require('../../swagger.json'))
 }
 
@@ -35,9 +35,10 @@ function getSwagger (req, res) {
  * GET /_about
  * About page
  */
-function getAbout (req, res) {
+function getAbout(req, res) {
   const paths = getPaths()
   res.render('system/about', {
+    layout: '',
     appName: JSON.stringify(packageFile.name),
     appVersion: JSON.stringify(packageFile.version),
     appDescription: JSON.stringify(packageFile.description),
@@ -50,7 +51,7 @@ function getAbout (req, res) {
     dockerName: JSON.stringify(version.dockerName),
     dockerVersion: JSON.stringify(version.dockerVersion),
     monitorUri: paths.system.monitor.uri,
-    robotsUri: paths.system.robots.uri
+    robotsUri: paths.system.robots.uri,
   })
 }
 
@@ -58,7 +59,7 @@ function getAbout (req, res) {
  * GET /_monitor
  * Monitor page
  */
-function getMonitor (req, res) {
+function getMonitor(req, res) {
   // Check MongoDB
   const mongodbHealthUtil = registry.getUtility(IHealthCheck, 'kth-node-mongodb')
   const subSystems = [mongodbHealthUtil.status(db, { required: true })]
@@ -76,25 +77,27 @@ function getMonitor (req, res) {
   const systemHealthUtil = registry.getUtility(IHealthCheck, 'kth-node-system-check')
   const systemStatus = systemHealthUtil.status(localSystems, subSystems)
 
-  systemStatus.then((status) => {
-    // Return the result either as JSON or text
-    if (req.headers['accept'] === 'application/json') {
-      let outp = systemHealthUtil.renderJSON(status)
-      res.status(status.statusCode).json(outp)
-    } else {
-      let outp = systemHealthUtil.renderText(status)
-      res.type('text').status(status.statusCode).send(outp)
-    }
-  }).catch((err) => {
-    res.type('text').status(500).send(err)
-  })
+  systemStatus
+    .then(status => {
+      // Return the result either as JSON or text
+      if (req.headers['accept'] === 'application/json') {
+        let outp = systemHealthUtil.renderJSON(status)
+        res.status(status.statusCode).json(outp)
+      } else {
+        let outp = systemHealthUtil.renderText(status)
+        res.type('text').status(status.statusCode).send(outp)
+      }
+    })
+    .catch(err => {
+      res.type('text').status(500).send(err)
+    })
 }
 
 /**
  * GET /robots.txt
  * Robots.txt page
  */
-function getRobotsTxt (req, res) {
+function getRobotsTxt(req, res) {
   res.type('text').render('system/robots')
 }
 
@@ -102,10 +105,10 @@ function getRobotsTxt (req, res) {
  * GET /_paths
  * Return all paths for the system
  */
-function getPathsHandler (req, res) {
+function getPathsHandler(req, res) {
   res.json(getPaths())
 }
 
-function checkAPIKey (req, res) {
+function checkAPIKey(req, res) {
   res.end()
 }
