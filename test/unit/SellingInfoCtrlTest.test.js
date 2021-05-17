@@ -44,7 +44,6 @@ jest.mock('../../server/configuration', () => {
           level: 'debug',
         },
       },
-      ldap: {},
       proxyPrefixPath: {
         uri: 'kursinfo',
       },
