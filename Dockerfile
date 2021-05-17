@@ -1,4 +1,4 @@
-FROM kthse/kth-nodejs:14.0.0
+FROM node:14-alpine
 LABEL maintainer="KTH StudAdm studadm.developers@kth.se"
 
 RUN mkdir -p /npm && \
