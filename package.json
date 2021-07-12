@@ -6,6 +6,7 @@
   "main": "app.js",
   "private": true,
   "scripts": {
+    "prepare": "husky install",
     "codecheck": "pretty-quick",
     "test-ci": "is-ci \"test\" \"test:watch\"",
     "test": "NODE_ENV=test jest test/unit/*.js",
@@ -51,7 +52,7 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "husky": "^4.3.8",
+    "husky": "^7.0.1",
     "is-ci-cli": "^2.2.0",
     "jest": "^27.0.6",
     "nodemon": "^2.0.12",
@@ -68,11 +69,5 @@
     "singleQuote": true,
     "printWidth": 120,
     "arrowParens": "avoid"
-  },
-  "husky": {
-    "hooks": {
-      "pre-push": "npm run test",
-      "pre-commit": "pretty-quick --staged"
-    }
   }
 }
