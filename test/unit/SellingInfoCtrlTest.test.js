@@ -92,16 +92,15 @@ describe('Test functions of SellingInfoCtrl.js', () => {
     // process.env = { ...OLD_ENV }
     jest.clearAllMocks()
   })
-  test('getData', async done => {
+  test('getData', async () => {
     const { getData } = require('../../server/controllers/SellingInfoCtrl')
     const req = buildReq({ params: { courseCode: 'sf1624' } })
     const res = buildRes()
     const response = await getData(req, res)
     expect(res.json).toHaveBeenCalledTimes(1)
-    done()
   })
 
-  test('postData, update existing', async done => {
+  test('postData, update existing', async () => {
     const { postData } = require('../../server/controllers/SellingInfoCtrl')
     const req = buildReq({
       params: { courseCode: 'sf1624' },
@@ -117,10 +116,9 @@ describe('Test functions of SellingInfoCtrl.js', () => {
     const res = buildRes()
     const response = await postData(req, res)
     expect(res.json).toHaveBeenCalledTimes(1)
-    done()
   })
 
-  test('postData, handle req if database give empty object (course is not yet in db)', async done => {
+  test('postData, handle req if database give empty object (course is not yet in db)', async () => {
     const { postData } = require('../../server/controllers/SellingInfoCtrl')
     const req = buildReq({
       params: { courseCode: 'ef1111' },
@@ -136,6 +134,5 @@ describe('Test functions of SellingInfoCtrl.js', () => {
     const res = buildRes()
     const response = await postData(req, res)
     expect(res.json).toHaveBeenCalledTimes(1)
-    done()
   })
 })
