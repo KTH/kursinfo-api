@@ -36,6 +36,33 @@
         ]
       }
     },
+    "/v1/images/status": {
+      "get": {
+        "operationId": "getUploadedImagesNames",
+        "summary": "Get all images names uploaded by user",
+        "description": "Get all images names uploaded by user",
+        "tags": ["v1"],
+        "responses": {
+          "200": {
+            "description": "The requested data",
+            "schema": {
+              "$ref": "#/definitions/AllUploadedImagesName"
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": ["read"]
+          }
+        ]
+      }
+    },
     "/v1/sellingInfo/{courseCode}/": {
       "get": {
         "operationId": "getSellingTextByCourseCode",
@@ -238,6 +265,10 @@
           "description": "Description of the data"
         }
       }
+    },
+    "AllUploadedImagesName": {
+      "type": "array",
+      "items": "string"
     },
     "CourseModel": {
       "type": "object",

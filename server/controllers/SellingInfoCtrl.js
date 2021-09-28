@@ -76,7 +76,28 @@ async function postData(req, res) {
   }
 }
 
+async function getUploadedImagesNames(req, res) {
+  try {
+    const coursesWithOwnImages = await CourseModel.aggregate([
+      { $match: { imageInfo: { $regex: '^Picture_by_own_choice_*' } } },
+    ])
+
+    if (coursesWithOwnImages.length === 0) {
+      log.info('There is not any course with an uploaded image')
+      return res.json()
+    }
+    const imagesNames = coursesWithOwnImages.map(course => course.imageInfo)
+    log.info('Found uploaded images, count', imagesNames.length)
+    res.json(imagesNames)
+    // res.json(doc)
+  } catch (err) {
+    log.error('Failed to get images and its names, error:', { err })
+    return err
+  }
+}
+
 module.exports = {
   getData,
   postData,
+  getUploadedImagesNames,
 }
