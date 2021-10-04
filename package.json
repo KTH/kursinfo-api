@@ -2,6 +2,7 @@
   "//": "The production flag is added in the jenkins build script.",
   "name": "kursinfo-api",
   "version": "2.0.0",
+  "automaticPublish": "true",
   "description": "Api to serve course info introduction text on 2 languages",
   "main": "app.js",
   "private": true,
