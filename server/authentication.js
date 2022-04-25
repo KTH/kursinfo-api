@@ -1,6 +1,6 @@
 'use strict'
 
-const log = require('kth-node-log')
+const log = require('@kth/log')
 const config = require('./configuration').server
 const passport = require('passport')
 const server = require('./server')

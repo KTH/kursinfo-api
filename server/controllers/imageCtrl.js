@@ -2,16 +2,17 @@
 
 const { CourseModel } = require('../models/courseModel')
 
-const log = require('kth-node-log')
+const log = require('@kth/log')
 
 async function getImageInfo(req, res) {
   try {
     log.debug('==Course Code=', req.params.courseCode)
+    const courseCode = req.params.courseCode.toUpperCase()
     let doc = {}
     if (process.env.NODE_MOCK) {
-      doc = await { courseCode: 0, sellingText: 'mockSellingText' }
+      doc = { courseCode: 0, sellingText: 'mockSellingText' }
     } else {
-      doc = CourseModel.findOne({ courseCode: req.params.courseCode.toUpperCase() })
+      doc = await CourseModel.aggregate([{ $match: { courseCode } }])
     }
 
     if (!doc) {
@@ -30,7 +31,7 @@ async function postImageInfo(req, res) {
   try {
     const courseCode = req.params.courseCode.toUpperCase()
     const { imageInfo } = req.body
-    let doc = await CourseModel.findOne({ courseCode })
+    let doc = await CourseModel.aggregate([{ $match: { courseCode } }])
 
     if (!doc) {
       log.info('Course information is not found for a course: ', courseCode, 'and will try create a new')

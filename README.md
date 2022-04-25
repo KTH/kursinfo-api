@@ -10,6 +10,7 @@ The course information project (KIP) is an initiative at KTH that was launched i
 
 Kursinfo-api is a microservice to save course's short description and image to database. It accepts data from kursinfo admin pages "Administrate About course information
 "([kursinfo-admin-web](https://github.com/KTH/kursinfo-admin-web)) and serves this data to the public view of:
+
 - "Before choosing course"([kursinfo-web](https://github.com/KTH/kursinfo-web))
 - To show course memo information ([kurs-pm-web](https://github.com/KTH/kurs-pm-web))
 - To show in preview mode in course memo data admin web ([kurs-pm-data-admin-web](https://github.com/KTH/kurs-pm-data-admin-web))
@@ -27,22 +28,25 @@ Admin and public pages uses different rights and keys to separate their behaviou
 Only admin pages may change API data while public pages can only read. Therefore while using `Swagger`, a developer should choose the correct api key, because some functions will not be shown in details.
 
 ### Connected Projects
+
 - [kursinfo-web](https://github.com/KTH/kursinfo-web)
 - [kursinfo-admin-web](https://github.com/KTH/kursinfo-admin-web)
 - [kurs-pm-web](https://github.com/KTH/kurs-pm-web)
 - [kurs-pm-data-admin-web](https://github.com/KTH/kurs-pm-data-admin-web)
 
 ### Related Projects
+
 - [node-api](https://github.com/KTH/node-api)
 
 ## Prerequisites
 
-- Node.js 12.0.0
+- Node.js 16.0.0
 - Ansible Vault
 
 ### Secrets for Development
 
 Secrets during local development are ALWAYS stored in a `.env`-file in the root of your project. This file should be in .gitignore. This file should be in .gitignore. MONGODB_URI is usually uses db in azure, but it also goes to use localhost mongo, it have a default value in `config/serverSettings.js`
+
 ```
 MONGODB_URI=mongodb://kursinfo-api-stage-mongodb-kthse:[password, specified in Azure]==@kursinfo-api-stage-mongodb-kthse.documents.azure.com:[port, specified in Azure]/admin?ssl=true&authSource=admin
 API_KEYS_0=?name=kursinfo-web&apiKey=[generate a password for public pages]&scope=read
@@ -136,7 +140,6 @@ API_KEYS_2=?name=kursinfo-admin-web&apiKey=[generate a password for admin page]&
 API_KEYS_3=?name=kurs-pm-data-admin-web&apiKey=[generate a password for admin page]&scope=write&scope=read
 APPINSIGHTS_INSTRUMENTATIONKEY=[Azure, Application insights, Instrumentation Key, can be found in Overview]
 ```
-
 
 ## Author
 

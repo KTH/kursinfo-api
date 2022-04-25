@@ -7,10 +7,13 @@
   "main": "app.js",
   "private": true,
   "scripts": {
+    "docker:build": "bash ./docker-build-image.sh dev",
+    "docker:run": "bash ./docker-run-image.sh dev",
     "prepare": "husky install",
     "codecheck": "pretty-quick",
     "test-ci": "is-ci \"test\" \"test:watch\"",
     "test": "NODE_ENV=test jest test/unit/*.js",
+    "test-win": "cross-env NODE_ENV=test jest test/unit/SellingInfoCtrlTest.test.js",
     "test:watch": "NODE_ENV=test jest test/unit/*.js --watch",
     "test:docker:unit": "ID=$(docker build -q .) && LOCAL_IMAGE_ID=$ID docker-compose -f docker-compose-unit-tests.yml up --build --abort-on-container-exit --always-recreate-deps --force-recreate",
     "test:docker:integration": "docker build --progress plain -t kursinfo-api-integration . && bash -c 'LOCAL_IMAGE_ID=kursinfo-api-integration SUCCESS_DELAY=5000 docker-compose -f docker-compose-integration-tests.yml up --abort-on-container-exit --build --remove-orphans'",
@@ -19,28 +22,26 @@
   },
   "dependencies": {
     "applicationinsights": "^2.2.0",
-    "bluebird": "^3.7.2",
-    "body-parser": "^1.19.1",
-    "component-registry": "^2.0.0",
+    "@kth/kth-node-api-common": "^2.0.0",
+    "@kth/log": "^4.0.1",
+    "@kth/mongo": "^4.0.5",
+    "@kth/monitor": "^3.0.23",
+    "@kth/server": "^4.0.1",
+    "body-parser": "^1.19.2",
     "cookie-parser": "^1.4.6",
     "dotenv": "^10.0.0",
-    "express": "^4.17.2",
+    "express": "^4.17.3",
     "express-handlebars": "^5.3.5",
+    "fs": "0.0.1-security",
     "kth-node-access-log": "^0.2.7",
     "kth-node-api-common": "^1.0.10",
     "kth-node-api-key-strategy": "^1.0.14",
     "kth-node-configuration": "^2.0.8",
     "kth-node-express-routing": "^2.0.12",
-    "kth-node-log": "^3.1.11",
-    "kth-node-mongo": "^3.3.23",
-    "kth-node-monitor": "^1.1.14",
-    "kth-node-server": "^3.1.9",
-    "mongoose": "^5.13.2",
+    "mongoose": "^6.2.7",
     "passport": "^0.4.1",
     "safe-utils": "1.0.1",
-    "sanitize-html": "^2.6.1",
-    "saslprep": "^1.0.3",
-    "swagger-ui-dist": "^4.3.0"
+    "swagger-ui-dist": "^4.10.0"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
@@ -57,11 +58,12 @@
     "is-ci-cli": "^2.2.0",
     "jest": "^27.4.7",
     "nodemon": "^2.0.15",
-    "prettier": "^2.5.1",
-    "pretty-quick": "^3.1.3"
+    "prettier": "^2.6.0",
+    "pretty-quick": "^3.1.3",
+    "proxyquire": "^2.1.3"
   },
   "engines": {
-    "node": "14.0.0"
+    "node": "16.0.0"
   },
   "prettier": {
     "trailingComma": "es5",

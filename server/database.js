@@ -1,8 +1,8 @@
 'use strict'
 
 const config = require('./configuration').server
-const log = require('kth-node-log')
-const nodeMongo = require('kth-node-mongo')
+const log = require('@kth/log')
+const nodeMongo = require('@kth/mongo')
 
 const mongoOptions = {
   user: config.db.username,

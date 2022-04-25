@@ -4,13 +4,13 @@
 
 const { CourseModel } = require('../models/courseModel')
 
-const log = require('kth-node-log')
+const log = require('@kth/log')
 
 async function postCourseWebLink(req, res) {
   const { courseCode } = req.params
   const { isCourseWebLink } = req.body
   try {
-    let doc = await CourseModel.findOne({ courseCode: courseCode.toUpperCase() })
+    let doc = await CourseModel.aggregate([{ $match: { courseCode: courseCode.toUpperCase() } }])
 
     if (!doc) {
       log.info('Course information is not found for a course: ', courseCode, 'and will try create a new')
