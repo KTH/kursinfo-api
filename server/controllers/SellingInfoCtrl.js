@@ -13,7 +13,7 @@ async function getData(req, res) {
     if (process.env.NODE_ENV === 'test') {
       doc = { courseCode, sellingText_sv: 'mockSellingText', sellingText_en: 'caffe moca' }
     } else {
-      doc = await CourseModel.aggregate([{ $match: { courseCode } }])
+      doc = await CourseModel.findOne({ courseCode })
       console.log(doc)
     }
 
