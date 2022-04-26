@@ -12,7 +12,7 @@ async function getImageInfo(req, res) {
     if (process.env.NODE_MOCK) {
       doc = { courseCode: 0, sellingText: 'mockSellingText' }
     } else {
-      doc = await CourseModel.aggregate([{ $match: { courseCode } }])
+      doc = await CourseModel.findOne({ courseCode })
     }
 
     if (!doc) {
@@ -31,7 +31,7 @@ async function postImageInfo(req, res) {
   try {
     const courseCode = req.params.courseCode.toUpperCase()
     const { imageInfo } = req.body
-    let doc = await CourseModel.aggregate([{ $match: { courseCode } }])
+    let doc = await CourseModel.findOne({ courseCode })
 
     if (!doc) {
       log.info('Course information is not found for a course: ', courseCode, 'and will try create a new')
