@@ -63,12 +63,15 @@ These settings are also available in an `env.in` file.
 
 ## Prepare Database in Azure
 
-Create database `admin` and advisible manually set Throughput: 400 (Shared)(Today it is 1000).
+1. Create database `admin` and advisible manually set Throughput: 400 (Shared)(Today it is 1000).
 Name of database will be used in a connection string.
-In this database create a collection `courses-data`.
-Change a connection string:
+2. In this database create a collection `courses-data`.
+3. Change a connection string by adding name of database (`admin`) after port slush `[port]/` and as a search query after `?` as `authSorce=admin`:
 
-`mongodb://kursinfo-api-stage-mongodb-kthse:[password]==@kursinfo-api-stage-mongodb-kthse.documents.azure.com:[port]`~~/?ssl=true&replicaSet=globaldb~~`/admin?ssl=true&authSource=admin`
+`mongodb://kursinfo-api-stage-mongodb-kthse:[password]==@kursinfo-api-stage-mongodb-kthse.documents.azure.com:[port]`~~/?ssl=true&replicaSet=globaldb~~`/admin?ssl=true&replicaSet=globaldb&authSource=admin`
+
+More information can be found in Confluence: [Om kursen: Databas och API, connection string](https://confluence.sys.kth.se/confluence/x/a4_KC)
+
 
 ## For Development
 
