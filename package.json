@@ -21,9 +21,9 @@
     "start-dev": "cross-env NODE_ENV=development nodemon app.js"
   },
   "dependencies": {
-    "@kth/kth-node-api-common": "^2.0.3",
+    "@kth/kth-node-api-common": "^2.0.4",
     "@kth/log": "^4.0.4",
-    "@kth/mongo": "^4.0.11",
+    "@kth/mongo": "^4.0.12",
     "@kth/monitor": "^3.0.26",
     "@kth/server": "^4.0.3",
     "applicationinsights": "^2.3.4",
