@@ -8,7 +8,7 @@ const db = require('@kth/mongo')
 const { getPaths } = require('kth-node-express-routing')
 const version = require('../../config/version')
 const configServer = require('../configuration').server
-const monitorSystems = require('@kth/monitor')
+const { monitorRequest } = require('@kth/monitor')
 
 /**
  * * Adds a zero (0) to numbers less then ten (10)
@@ -93,17 +93,11 @@ function getAbout(req, res) {
  */
 async function getMonitor(req, res) {
   try {
-    await monitorSystems(req, res, [
+    await monitorRequest(req, res, [
       {
         key: 'mongodb',
         required: true,
         db,
-      },
-      {
-        key: 'local',
-        isResolved: true,
-        message: '- local system checks: OK',
-        statusCode: 200,
       },
     ])
   } catch (error) {
