@@ -1,7 +1,7 @@
 # Welcome to kursinfo-api 👋
 
 ![Version](https://img.shields.io/badge/version-0.8.0-blue.svg?cacheSeconds=2592000)
-![Prerequisite](https://img.shields.io/badge/node-16-blue.svg)
+![Prerequisite](https://img.shields.io/badge/node-20-blue.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#)
 
 ## Introduction
@@ -40,7 +40,7 @@ Only admin pages may change API data while public pages can only read. Therefore
 
 ## Prerequisites
 
-- Node.js 16
+- Node.js 20
 - Ansible Vault
 
 ### Secrets for Development
@@ -64,14 +64,13 @@ These settings are also available in an `env.in` file.
 ## Prepare Database in Azure
 
 1. Create database `admin` and advisible manually set Throughput: 400 (Shared)(Today it is 1000).
-Name of database will be used in a connection string.
+   Name of database will be used in a connection string.
 2. In this database create a collection `courses-data`.
 3. Change a connection string by adding name of database (`admin`) after port slush `[port]/` and as a search query after `?` as `authSorce=admin`:
 
 `mongodb://kursinfo-api-stage-mongodb-kthse:[password]==@kursinfo-api-stage-mongodb-kthse.documents.azure.com:[port]`~~/?ssl=true&replicaSet=globaldb~~`/admin?ssl=true&replicaSet=globaldb&authSource=admin`
 
 More information can be found in Confluence: [Om kursen: Databas och API, connection string](https://confluence.sys.kth.se/confluence/x/a4_KC)
-
 
 ## For Development
 
