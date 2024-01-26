@@ -1,4 +1,4 @@
-const { CourseModel } = require('../models')
+const { CourseModel } = require('../models/courseModel')
 
 const getExistingDocOrNewOne = async courseCode => {
   let exists = {}

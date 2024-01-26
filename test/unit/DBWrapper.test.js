@@ -1,38 +1,37 @@
-class MockCourseModel {
-  constructor({ courseCode, sellingTexts_en, sellingTexts_sv }) {
-    this.courseCode = courseCode
-    this.sellingTexts_en = sellingTexts_en
-    this.sellingTexts_sv = sellingTexts_sv
-  }
-}
+const { getExistingDocOrNewOne } = require('../../server/lib/DBWrapper')
 
-const createMockFindOne = courseCodeOrCommand => () => {
-  let doc
+jest.mock('../../server/models/courseModel')
+const { CourseModel } = require('../../server/models/courseModel')
 
-  switch (courseCodeOrCommand) {
-    case 'none':
-      doc = undefined
-      break
-    case 'fail':
-      return Promise.reject(new Error('Error from DB'))
-    default:
-      doc = new MockCourseModel({ courseCode: courseCodeOrCommand, sellingTexts_en: 'fooEN', sellingTexts_sv: 'fooSV' })
-      break
-  }
-  return Promise.resolve(doc)
-}
-// test('calls CourseModel.findOne with courseCode', () => {
-//   const req = { params: { courseCode: 'SF1624' } }
-//   const res = buildRes()
-//   putCourseInfo(req, res)
+describe('getExistingDocOrNewOne', () => {
+  beforeEach(() => {
+    CourseModel.mockImplementation(obj => {
+      return { obj, findOne: jest.fn() }
+    })
+  })
+  test('calls CourseModel.findOne with courseCode', () => {
+    getExistingDocOrNewOne('SF1624')
+    expect(CourseModel.findOne).toHaveBeenCalledWith({ courseCode: 'SF1624' })
+  })
+  test('calls CourseModel.findOne with uppercase courseCode', () => {
+    getExistingDocOrNewOne('sf1624')
+    expect(CourseModel.findOne).toHaveBeenCalledWith({ courseCode: 'SF1624' })
+  })
 
-//   expect(CourseModel.findOne).toHaveBeenCalledWith({ courseCode: 'SF1624' })
-// })
+  test('returns document if one is found', async () => {
+    const doc = { courseCode: 'SF1624', sellingTexts_en: 'fooEN', sellingTexts_sv: 'fooSV' }
+    CourseModel.findOne.mockImplementationOnce(() => {
+      return Promise.resolve(doc)
+    })
 
-// test('calls CourseModel.findOne with uppercase CourseCode', () => {
-//   const req = { params: { courseCode: 'sf1624' } }
-//   const res = buildRes()
-//   const test = putCourseInfo(req, res)
+    const result = await getExistingDocOrNewOne('SF1624')
 
-//   expect(CourseModel.findOne).toHaveBeenCalledWith({ courseCode: 'SF1624' })
-// })
+    expect(result).toEqual(doc)
+  })
+
+  test('if no document is found, createes a new document', async () => {
+    await getExistingDocOrNewOne('SF1624')
+
+    expect(CourseModel).toHaveBeenCalledWith({ courseCode: 'SF1624' })
+  })
+})

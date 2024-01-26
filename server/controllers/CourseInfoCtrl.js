@@ -1,7 +1,7 @@
 const log = require('@kth/log')
 const { getExistingDocOrNewOne } = require('../lib/DBWrapper')
 
-const putCourseInfo = async (req, res) => {
+const putCourseInfoByCourseCode = async (req, res) => {
   const courseCode = req.params.courseCode
   const body = req.body
 
@@ -17,7 +17,7 @@ const putCourseInfo = async (req, res) => {
   try {
     const { sellingText: sellingTexts, sellingTextAuthor, imageInfo } = body
 
-    const doc = getExistingDocOrNewOne(courseCode)
+    const doc = await getExistingDocOrNewOne(courseCode)
 
     doc.imageInfo = imageInfo
     doc.sellingText_en = sellingTexts?.en
@@ -43,5 +43,5 @@ const putCourseInfo = async (req, res) => {
 }
 
 module.exports = {
-  putCourseInfo,
+  putCourseInfoByCourseCode,
 }
