@@ -15,7 +15,13 @@ const putCourseInfoByCourseCode = async (req, res) => {
   log.info('Saving for a course: ', courseCode.toUpperCase(), 'Data: ', req.body)
 
   try {
-    const { sellingText: sellingTexts, sellingTextAuthor, imageInfo } = body
+    const {
+      sellingText: sellingTexts,
+      sellingTextAuthor,
+      imageInfo,
+      supplementaryInfo: supplementaryInfos,
+      courseDisposition: courseDispositions,
+    } = body
 
     const doc = await getExistingDocOrNewOne(courseCode)
 
@@ -23,6 +29,10 @@ const putCourseInfoByCourseCode = async (req, res) => {
     doc.sellingText_en = sellingTexts?.en
     doc.sellingText_sv = sellingTexts?.sv
     doc.sellingTextAuthor = sellingTextAuthor
+    doc.supplementaryInfo_en = supplementaryInfos?.en
+    doc.supplementaryInfo_sv = supplementaryInfos?.sv
+    doc.courseDisposition_en = courseDispositions?.en
+    doc.courseDisposition_sv = courseDispositions?.sv
 
     await doc.save()
 
@@ -32,7 +42,12 @@ const putCourseInfoByCourseCode = async (req, res) => {
       sellingText_en: sellingTexts.en,
       sellingText_sv: sellingTexts.sv,
       sellingTextAuthor: doc.sellingTextAuthor,
+      supplementaryInfo_en: supplementaryInfos.en,
+      supplementaryInfo_sv: supplementaryInfos.sv,
+      courseDisposition_en: courseDispositions.en,
+      courseDisposition_sv: courseDispositions.sv,
     }
+
     log.info('Successfully saved for courseCode: ', doc.courseCode, 'Data: ', responseObject)
 
     return res.send(201, responseObject)

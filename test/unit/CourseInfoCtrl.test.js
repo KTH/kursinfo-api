@@ -17,11 +17,18 @@ const mockDoc = {
   courseCode: 'SF1624',
   sellingText_en: 'fooEN',
   sellingText_sv: 'fooSV',
+  courseDisposition_en: 'courseDisposition text en',
+  courseDisposition_sv: 'courseDisposition text sv',
+  supplementaryInfo_en: 'supplmentaryInfo text en',
+  supplementaryInfo_sv: 'supplmentaryInfo text sv',
+
   save: jest.fn(),
 }
 
 const newDoc = {
   sellingText: { en: 'New selling text', sv: 'Ny säljtext' },
+  courseDisposition: { en: 'New course disposition text', sv: 'Ny kursuplägg text' },
+  supplementaryInfo: { en: 'New supplementary info text', sv: 'Ny övrig info text' },
   sellingTextAuthor: 'Ada Lovelace',
   imageInfo: 'someImageInfo',
 }
@@ -92,6 +99,10 @@ describe('putCourseInfo', () => {
       sellingText_sv: 'Ny säljtext',
       sellingTextAuthor: 'Ada Lovelace',
       imageInfo: 'someImageInfo',
+      courseDisposition_en: 'New course disposition text',
+      courseDisposition_sv: 'Ny kursuplägg text',
+      supplementaryInfo_en: 'New supplementary info text',
+      supplementaryInfo_sv: 'Ny övrig info text',
       save: expect.any(Function),
     })
 
@@ -110,6 +121,10 @@ describe('putCourseInfo', () => {
       sellingText_sv: 'Ny säljtext',
       sellingTextAuthor: 'Ada Lovelace',
       imageInfo: 'someImageInfo',
+      courseDisposition_en: 'New course disposition text',
+      courseDisposition_sv: 'Ny kursuplägg text',
+      supplementaryInfo_en: 'New supplementary info text',
+      supplementaryInfo_sv: 'Ny övrig info text',
       save: expect.any(Function),
     })
     expect(mockDoc.save).toHaveBeenCalled()
@@ -153,6 +168,10 @@ describe('putCourseInfo', () => {
       sellingTextAuthor: 'Ada Lovelace',
       imageInfo: 'someImageInfo',
       save: expect.any(Function),
+      courseDisposition_en: 'New course disposition text',
+      courseDisposition_sv: 'Ny kursuplägg text',
+      supplementaryInfo_en: 'New supplementary info text',
+      supplementaryInfo_sv: 'Ny övrig info text',
     })
   })
 

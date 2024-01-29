@@ -45,6 +45,38 @@ module.exports = mongoose.Schema(
       maxlength: [10, 'Text must have at most 10 characters.'],
       default: '',
     },
+    supplementaryInfo_en: {
+      type: String,
+      required: [false, 'If supplementaryInfo is added then short text will be hidden.'],
+      trim: true,
+      minlength: 0,
+      maxlength: [10000, 'Text must have at most 5000 characters.'],
+      default: '',
+    },
+    supplementaryInfo_sv: {
+      type: String,
+      required: [false, 'If supplementaryInfo is added then short text will be hidden.'],
+      trim: true,
+      minlength: 0,
+      maxlength: [10000, 'Text must have at most 5000 characters.'],
+      default: '',
+    },
+    courseDisposition_en: {
+      type: String,
+      required: [false, 'If courseDisposition is added then short text will be hidden.'],
+      trim: true,
+      minlength: 0,
+      maxlength: [10000, 'Text must have at most 5000 characters.'],
+      default: '',
+    },
+    courseDisposition_sv: {
+      type: String,
+      required: [false, 'If courseDisposition is added then short text will be hidden.'],
+      trim: true,
+      minlength: 0,
+      maxlength: [10000, 'Text must have at most 5000 characters.'],
+      default: '',
+    },
   },
   { collection: 'courses-data', toJSON: { virtuals: true }, id: false }
 )
@@ -58,6 +90,26 @@ module.exports.pre('save', next => {
   if (this.sellingText_sv) {
     if (safeGet(() => this.sellingText_sv)) {
       this.sellingText_sv = sanitize(this.sellingText_sv)
+    }
+  }
+  if (this.courseDisposition_sv) {
+    if (safeGet(() => this.courseDisposition_sv)) {
+      this.courseDisposition_sv = sanitize(this.courseDisposition_sv)
+    }
+  }
+  if (this.courseDisposition_en) {
+    if (safeGet(() => this.courseDisposition_en)) {
+      this.courseDisposition_en = sanitize(this.courseDisposition_en)
+    }
+  }
+  if (this.supplementaryInfo_sv) {
+    if (safeGet(() => this.supplementaryInfo_sv)) {
+      this.supplementaryInfo_sv = sanitize(this.supplementaryInfo_sv)
+    }
+  }
+  if (this.supplementaryInfo_en) {
+    if (safeGet(() => this.supplementaryInfo_en)) {
+      this.supplementaryInfo_en = sanitize(this.supplementaryInfo_en)
     }
   }
   next()
