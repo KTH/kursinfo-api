@@ -160,6 +160,66 @@
         ]
       }
     },
+    "/v1/courseInfo/{courseCode}/": {
+      "put": {
+        "operationId": "putCourseInfoByCourseCode",
+        "summary": "Saves an object in the database",
+        "description": "Saves changes to an object in the database",
+        "parameters": [
+          {
+            "name": "courseCode",
+            "in": "path",
+            "description": "courseCode of the courseInfo to save",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "sellingText_en",
+            "in": "body",
+            "description": "English sellingText to save",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/CourseModel"
+            }
+          },
+          {
+            "name": "sellingText_sv",
+            "in": "body",
+            "description": "Swedish sellingText to save",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/CourseModel"
+            }
+          },
+          {
+            "name": "imageInfo",
+            "in": "body",
+            "description": "Image name which was saved in a azure blob torage",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/CourseModel"
+            }
+          }
+        ],
+        "tags": ["v1"],
+        "responses": {
+          "200": {
+            "description": "A successful save"
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": ["write"]
+          }
+        ]
+      }
+    },
     "/v1/imageInfo/{courseCode}/": {
       "post": {
         "operationId": "postImageInfo",
