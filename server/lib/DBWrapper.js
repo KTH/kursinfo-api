@@ -11,6 +11,13 @@ const getExistingDocOrNewOne = async courseCode => {
   }
 }
 
+const getDoc = async courseCode => {
+  console.log(courseCode, 'courseCode in Dbwrapper')
+  let doc = await CourseModel.findOne({ courseCode: courseCode.toUpperCase() }).exec()
+  return doc
+}
+
 module.exports = {
   getExistingDocOrNewOne,
+  getDoc,
 }

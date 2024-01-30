@@ -1,5 +1,5 @@
 const log = require('@kth/log')
-const { getExistingDocOrNewOne } = require('../lib/DBWrapper')
+const { getExistingDocOrNewOne, getDoc } = require('../lib/DBWrapper')
 
 const putCourseInfoByCourseCode = async (req, res) => {
   const courseCode = req.params.courseCode
@@ -57,6 +57,28 @@ const putCourseInfoByCourseCode = async (req, res) => {
   }
 }
 
+const getCourseInfoByCourseCode = async (req, res) => {
+  const courseCode = req.params.courseCode
+  if (!courseCode) {
+    return res.send(400, "Missing parameter 'courseCode'")
+  }
+  try {
+    let doc = {}
+    doc = await getDoc(courseCode)
+    if (doc) {
+      log.info('Successfully fetched CourseInfo for courseCode: ', doc.courseCode, 'Data: ', doc)
+      return res.send(201, doc)
+    } else {
+      log.info(`No entry found for courseCode: ${courseCode}`)
+      return res.send(204)
+    }
+  } catch (err) {
+    log.error('Failed fetching courseInfo', { err })
+    return err
+  }
+}
+
 module.exports = {
   putCourseInfoByCourseCode,
+  getCourseInfoByCourseCode,
 }

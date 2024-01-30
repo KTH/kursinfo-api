@@ -11,7 +11,7 @@ jest.mock('@kth/log', () => {
 const log = require('@kth/log')
 
 jest.mock('../../server/lib/DBWrapper')
-const { getExistingDocOrNewOne } = require('../../server/lib/DBWrapper')
+const { getExistingDocOrNewOne, getDoc } = require('../../server/lib/DBWrapper')
 
 const mockDoc = {
   courseCode: 'SF1624',
@@ -49,6 +49,74 @@ function buildRes(overrides = {}) {
   }
   return res
 }
+
+describe('getCourseInfo', () => {
+  beforeEach(() => {
+    getExistingDocOrNewOne.mockImplementation(() => mockDoc)
+    getDoc.mockImplementation(() => mockDoc)
+  })
+  const { getCourseInfoByCourseCode } = require('../../server/controllers/CourseInfoCtrl')
+
+  test('returns 400 if no courseCode is given', () => {
+    const req = { params: {} }
+    const res = buildRes()
+    getCourseInfoByCourseCode(req, res)
+    expect(res.send).toHaveBeenCalledWith(400, "Missing parameter 'courseCode'")
+  })
+
+  test('returns CourseInfo Object when called', async () => {
+    const req = { params: { courseCode: mockDoc.courseCode } }
+    const res = buildRes()
+    await getCourseInfoByCourseCode(req, res)
+
+    expect(res.send).toHaveBeenCalledWith(201, mockDoc)
+  })
+  test('returns 204 if courseCode doesnt exist', async () => {
+    getDoc.mockImplementationOnce(() => undefined)
+
+    const req = { params: { courseCode: '11111' } }
+    const res = buildRes()
+    await getCourseInfoByCourseCode(req, res)
+
+    expect(res.send).toHaveBeenCalledWith(204)
+  })
+  test('Returns error when database error occurs', async () => {
+    const expectedError = new Error('Error from DB')
+    getDoc.mockImplementationOnce(() => {
+      throw expectedError
+    })
+
+    const req = { params: { courseCode: 'sf1624' } }
+    const res = buildRes()
+
+    const returnValue = await getCourseInfoByCourseCode(req, res)
+
+    expect(log.error).toHaveBeenCalledWith('Failed fetching courseInfo', { err: expectedError })
+    expect(returnValue).toEqual(expectedError)
+  })
+  test('logs sufficiently in happy case', async () => {
+    const req = { params: { courseCode: mockDoc.courseCode } }
+    const res = buildRes()
+    await getCourseInfoByCourseCode(req, res)
+
+    expect(log.info).toHaveBeenNthCalledWith(
+      1,
+      'Successfully fetched CourseInfo for courseCode: ',
+      'SF1624',
+      'Data: ',
+      mockDoc
+    )
+  })
+  test('log for when coursecode isnt found', async () => {
+    getDoc.mockImplementationOnce(() => undefined)
+
+    const req = { params: { courseCode: '11111' } }
+    const res = buildRes()
+    await getCourseInfoByCourseCode(req, res)
+
+    expect(log.info).toHaveBeenNthCalledWith(1, 'No entry found for courseCode: 11111')
+  })
+})
 
 describe('putCourseInfo', () => {
   beforeEach(() => {
