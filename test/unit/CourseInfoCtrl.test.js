@@ -33,6 +33,19 @@ const newDoc = {
   imageInfo: 'someImageInfo',
 }
 
+const updatedDoc = {
+  courseCode: 'SF1624',
+  sellingText_en: 'New selling text',
+  sellingText_sv: 'Ny säljtext',
+  sellingTextAuthor: 'Ada Lovelace',
+  imageInfo: 'someImageInfo',
+  courseDisposition_en: 'New course disposition text',
+  courseDisposition_sv: 'Ny kursuplägg text',
+  supplementaryInfo_en: 'New supplementary info text',
+  supplementaryInfo_sv: 'Ny övrig info text',
+  save: expect.any(Function),
+}
+
 function buildRes(overrides = {}) {
   const res = {
     json: jest
@@ -50,54 +63,49 @@ function buildRes(overrides = {}) {
   return res
 }
 
+async function reqHandler(endpoint, req, overrides = {}) {
+  const res = buildRes(overrides)
+
+  const returnValue = await endpoint(req, res)
+  return { returnValue, res }
+}
+
 describe('getCourseInfo', () => {
   beforeEach(() => {
-    getExistingDocOrNewOne.mockImplementation(() => mockDoc)
-    getDoc.mockImplementation(() => mockDoc)
+    getExistingDocOrNewOne.mockResolvedValue(mockDoc)
+    getDoc.mockResolvedValue(mockDoc)
   })
   const { getCourseInfoByCourseCode } = require('../../server/controllers/CourseInfoCtrl')
 
-  test('returns 400 if no courseCode is given', () => {
-    const req = { params: {} }
-    const res = buildRes()
-    getCourseInfoByCourseCode(req, res)
+  test('returns 400 if no courseCode is given', async () => {
+    const { res } = await reqHandler(getCourseInfoByCourseCode, { params: {} })
+
     expect(res.send).toHaveBeenCalledWith(400, "Missing parameter 'courseCode'")
   })
 
   test('returns CourseInfo Object when called', async () => {
-    const req = { params: { courseCode: mockDoc.courseCode } }
-    const res = buildRes()
-    await getCourseInfoByCourseCode(req, res)
+    const { res } = await reqHandler(getCourseInfoByCourseCode, { params: { courseCode: mockDoc.courseCode } })
 
     expect(res.send).toHaveBeenCalledWith(201, mockDoc)
   })
   test('returns 204 if courseCode doesnt exist', async () => {
     getDoc.mockImplementationOnce(() => undefined)
 
-    const req = { params: { courseCode: '11111' } }
-    const res = buildRes()
-    await getCourseInfoByCourseCode(req, res)
+    const { res } = await reqHandler(getCourseInfoByCourseCode, { params: { courseCode: '11111' } })
 
     expect(res.send).toHaveBeenCalledWith(204)
   })
   test('Returns error when database error occurs', async () => {
     const expectedError = new Error('Error from DB')
-    getDoc.mockImplementationOnce(() => {
-      throw expectedError
-    })
+    getDoc.mockRejectedValueOnce(expectedError)
 
-    const req = { params: { courseCode: 'sf1624' } }
-    const res = buildRes()
-
-    const returnValue = await getCourseInfoByCourseCode(req, res)
+    const { returnValue } = await reqHandler(getCourseInfoByCourseCode, { params: { courseCode: 'sf1624' } })
 
     expect(log.error).toHaveBeenCalledWith('Failed fetching courseInfo', { err: expectedError })
     expect(returnValue).toEqual(expectedError)
   })
   test('logs sufficiently in happy case', async () => {
-    const req = { params: { courseCode: mockDoc.courseCode } }
-    const res = buildRes()
-    await getCourseInfoByCourseCode(req, res)
+    await reqHandler(getCourseInfoByCourseCode, { params: { courseCode: mockDoc.courseCode } })
 
     expect(log.info).toHaveBeenNthCalledWith(
       1,
@@ -108,11 +116,9 @@ describe('getCourseInfo', () => {
     )
   })
   test('log for when coursecode isnt found', async () => {
-    getDoc.mockImplementationOnce(() => undefined)
+    getDoc.mockResolvedValueOnce(undefined)
 
-    const req = { params: { courseCode: '11111' } }
-    const res = buildRes()
-    await getCourseInfoByCourseCode(req, res)
+    await reqHandler(getCourseInfoByCourseCode, { params: { courseCode: '11111' } })
 
     expect(log.info).toHaveBeenNthCalledWith(1, 'No entry found for courseCode: 11111')
   })
@@ -120,31 +126,24 @@ describe('getCourseInfo', () => {
 
 describe('putCourseInfo', () => {
   beforeEach(() => {
-    getExistingDocOrNewOne.mockImplementation(() => {
-      return mockDoc
-    })
+    getExistingDocOrNewOne.mockResolvedValue(mockDoc)
   })
   const { putCourseInfoByCourseCode } = require('../../server/controllers/CourseInfoCtrl')
 
-  test('returns 400 if no courseCode is given', () => {
-    const req = { params: {} }
-    const res = buildRes()
-    putCourseInfoByCourseCode(req, res)
+  test('returns 400 if no courseCode is given', async () => {
+    const { res } = await reqHandler(putCourseInfoByCourseCode, { params: {} })
 
     expect(res.send).toHaveBeenCalledWith(400, "Missing parameter 'courseCode'")
   })
 
-  test('returns 400 if no body is given', () => {
-    const req = { params: { courseCode: 'sf1624' }, body: {} }
-    const res = buildRes()
-    putCourseInfoByCourseCode(req, res)
+  test('returns 400 if no body is given', async () => {
+    const { res } = await reqHandler(putCourseInfoByCourseCode, { params: { courseCode: 'sf1624' }, body: {} })
+
     expect(res.send).toHaveBeenCalledWith(400, 'Missing request body')
   })
 
-  test('calls getExistingDocOrNewOne with courseCode', () => {
-    const req = { params: { courseCode: 'sf1624' }, body: newDoc }
-    const res = buildRes()
-    putCourseInfoByCourseCode(req, res)
+  test('calls getExistingDocOrNewOne with courseCode', async () => {
+    await reqHandler(putCourseInfoByCourseCode, { params: { courseCode: 'sf1624' }, body: newDoc })
 
     expect(getExistingDocOrNewOne).toHaveBeenCalledWith('sf1624')
   })
@@ -153,48 +152,25 @@ describe('putCourseInfo', () => {
       courseCode: 'SF1624',
       save: jest.fn(),
     }
-    getExistingDocOrNewOne.mockImplementationOnce(() => emptyMockDoc)
+    getExistingDocOrNewOne.mockResolvedValueOnce(emptyMockDoc)
 
     const courseCode = 'SF1624'
 
-    const req = { params: { courseCode }, body: newDoc }
-    const res = buildRes()
-    await putCourseInfoByCourseCode(req, res)
+    const { res } = await reqHandler(putCourseInfoByCourseCode, { params: { courseCode }, body: newDoc })
 
-    expect(emptyMockDoc).toStrictEqual({
-      courseCode: 'SF1624',
-      sellingText_en: 'New selling text',
-      sellingText_sv: 'Ny säljtext',
-      sellingTextAuthor: 'Ada Lovelace',
-      imageInfo: 'someImageInfo',
-      courseDisposition_en: 'New course disposition text',
-      courseDisposition_sv: 'Ny kursuplägg text',
-      supplementaryInfo_en: 'New supplementary info text',
-      supplementaryInfo_sv: 'Ny övrig info text',
-      save: expect.any(Function),
-    })
+    expect(emptyMockDoc).toStrictEqual(updatedDoc)
 
     const { save: _, ...expectedResponse } = emptyMockDoc
     expect(res.send).toHaveBeenCalledWith(201, expectedResponse)
   })
 
   test('if matching object exists in DB, writes object with new data to the DB', async () => {
-    const req = { params: { courseCode: 'sf1624' }, body: newDoc }
-    const res = buildRes()
-    const returnValue = await putCourseInfoByCourseCode(req, res)
-
-    expect(mockDoc).toStrictEqual({
-      courseCode: 'SF1624',
-      sellingText_en: 'New selling text',
-      sellingText_sv: 'Ny säljtext',
-      sellingTextAuthor: 'Ada Lovelace',
-      imageInfo: 'someImageInfo',
-      courseDisposition_en: 'New course disposition text',
-      courseDisposition_sv: 'Ny kursuplägg text',
-      supplementaryInfo_en: 'New supplementary info text',
-      supplementaryInfo_sv: 'Ny övrig info text',
-      save: expect.any(Function),
+    const { res, returnValue } = await reqHandler(putCourseInfoByCourseCode, {
+      params: { courseCode: 'sf1624' },
+      body: newDoc,
     })
+
+    expect(mockDoc).toStrictEqual(updatedDoc)
     expect(mockDoc.save).toHaveBeenCalled()
 
     const { save: _, ...expectedResponse } = mockDoc
@@ -205,13 +181,12 @@ describe('putCourseInfo', () => {
 
   test('if error occurs, return error', async () => {
     const expectedError = new Error('Error from DB')
-    getExistingDocOrNewOne.mockImplementationOnce(() => {
-      throw expectedError
-    })
+    getExistingDocOrNewOne.mockRejectedValueOnce(expectedError)
 
-    const req = { params: { courseCode: 'sf1624' }, body: newDoc }
-    const res = buildRes()
-    const returnValue = await putCourseInfoByCourseCode(req, res)
+    const { returnValue } = await reqHandler(putCourseInfoByCourseCode, {
+      params: { courseCode: 'sf1624' },
+      body: newDoc,
+    })
 
     expect(log.error).toHaveBeenCalledWith('Failed posting courseInfo', { err: expectedError })
 
@@ -225,22 +200,9 @@ describe('putCourseInfo', () => {
       test: 'fields',
     }
 
-    const req = { params: { courseCode: 'sf1624' }, body: newDocExtraFields }
-    const res = buildRes()
-    await putCourseInfoByCourseCode(req, res)
+    await reqHandler(putCourseInfoByCourseCode, { params: { courseCode: 'sf1624' }, body: newDocExtraFields })
 
-    expect(mockDoc).toStrictEqual({
-      courseCode: 'SF1624',
-      sellingText_en: 'New selling text',
-      sellingText_sv: 'Ny säljtext',
-      sellingTextAuthor: 'Ada Lovelace',
-      imageInfo: 'someImageInfo',
-      save: expect.any(Function),
-      courseDisposition_en: 'New course disposition text',
-      courseDisposition_sv: 'Ny kursuplägg text',
-      supplementaryInfo_en: 'New supplementary info text',
-      supplementaryInfo_sv: 'Ny övrig info text',
-    })
+    expect(mockDoc).toStrictEqual(updatedDoc)
   })
 
   test('does not set parameters that were not sent', async () => {
@@ -248,10 +210,9 @@ describe('putCourseInfo', () => {
       courseCode: 'SF1624',
       save: jest.fn(),
     }
-    getExistingDocOrNewOne.mockImplementationOnce(() => emptyMockDoc)
-    const req = { params: { courseCode: 'sf1624' }, body: {} }
-    const res = buildRes()
-    const result = await putCourseInfoByCourseCode(req, res)
+    getExistingDocOrNewOne.mockResolvedValueOnce(emptyMockDoc)
+
+    await reqHandler(putCourseInfoByCourseCode, { params: { courseCode: 'sf1624' }, body: {} })
 
     expect(emptyMockDoc).toStrictEqual({
       courseCode: 'SF1624',
@@ -260,9 +221,7 @@ describe('putCourseInfo', () => {
   })
 
   test('logs sufficiently in happy case', async () => {
-    const req = { params: { courseCode: 'sf1624' }, body: newDoc }
-    const res = buildRes()
-    await putCourseInfoByCourseCode(req, res)
+    await reqHandler(putCourseInfoByCourseCode, { params: { courseCode: 'sf1624' }, body: newDoc })
 
     expect(log.info).toHaveBeenNthCalledWith(1, 'Saving for a course: ', 'SF1624', 'Data: ', newDoc)
     const { save: _, ...expectedResponse } = mockDoc
