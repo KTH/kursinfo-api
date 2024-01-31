@@ -160,6 +160,7 @@ apiRoute.register(paths.api.postCourseWebLink, CourseWebLink.postCourseWebLink)
 
 // putCourseInfo
 apiRoute.register(paths.api.putCourseInfoByCourseCode, CourseInfo.putCourseInfoByCourseCode)
+apiRoute.register(paths.api.getCourseInfoByCourseCode, CourseInfo.getCourseInfoByCourseCode)
 
 server.use('/', apiRoute.getRouter())
 

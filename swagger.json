@@ -163,6 +163,40 @@
       }
     },
     "/v1/courseInfo/{courseCode}/": {
+      "get": {
+        "operationId": "getCourseInfoByCourseCode",
+        "summary": "Get course info for a specific course",
+        "description": "Get course info for a specific course",
+        "parameters": [
+          {
+            "name": "courseCode",
+            "in": "path",
+            "description": "course code",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": ["v1"],
+        "responses": {
+          "200": {
+            "description": "The requested data",
+            "schema": {
+              "$ref": "#/definitions/CourseModel"
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": ["read"]
+          }
+        ]
+      },
       "put": {
         "operationId": "putCourseInfoByCourseCode",
         "summary": "Saves an object in the database",
@@ -171,38 +205,21 @@
           {
             "name": "courseCode",
             "in": "path",
-            "description": "courseCode of the courseInfo to save",
+            "description": "course code",
             "required": true,
             "type": "string"
           },
           {
-            "name": "sellingText_en",
+            "name": "courseInfo",
             "in": "body",
-            "description": "English sellingText to save",
-            "required": false,
-            "schema": {
-              "$ref": "#/definitions/CourseModel"
-            }
-          },
-          {
-            "name": "sellingText_sv",
-            "in": "body",
-            "description": "Swedish sellingText to save",
-            "required": false,
-            "schema": {
-              "$ref": "#/definitions/CourseModel"
-            }
-          },
-          {
-            "name": "imageInfo",
-            "in": "body",
-            "description": "Image name which was saved in a azure blob torage",
-            "required": false,
+            "description": "courseInfo to save",
+            "required": true,
             "schema": {
               "$ref": "#/definitions/CourseModel"
             }
           }
         ],
+
         "tags": ["v1"],
         "responses": {
           "200": {
@@ -361,6 +378,49 @@
         }
       }
     },
+    "CourseInfo": {
+      "type": "object",
+      "required": ["courseCode"],
+      "properties": {
+        "courseCode": {
+          "type": "string",
+          "description": "Unique course identifier representing course code, t.e, SF1624"
+        },
+        "sellingText_en": {
+          "type": "string",
+          "description": "English course introduction, html text"
+        },
+        "sellingText_se": {
+          "type": "string",
+          "description": "Swedish course introduction, html text"
+        },
+        "imageInfo": {
+          "type": "string",
+          "description": "The imageInfo to save, t.e., Picture_by_own_choice_SF1624.jpg"
+        },
+        "sellingTextAuthor": {
+          "type": "string",
+          "description": "The author's kthId to save"
+        },
+        "courseDisposition_sv": {
+          "type": "string",
+          "description": "The courses disposition in Swedish."
+        },
+        "courseDisposition_en": {
+          "type": "string",
+          "description": "The courses disposition in English."
+        },
+        "supplementaryInfo_sv": {
+          "type": "string",
+          "description": "Supplementary info regarding the course in Swedish."
+        },
+        "supplementaryInfo_en": {
+          "type": "string",
+          "description": "Supplementary info regarding the course in English."
+        }
+      }
+    },
+
     "Error": {
       "properties": {
         "code": {
