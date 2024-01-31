@@ -68,6 +68,7 @@
     },
     "/v1/sellingInfo/{courseCode}/": {
       "get": {
+        "deprecated": true,
         "operationId": "getSellingTextByCourseCode",
         "summary": "Get selling info for a specific course saved in 2 languages, author and image name",
         "description": "Get selling info for a specific course saved in 2 languages, author and image name",
@@ -102,6 +103,7 @@
         ]
       },
       "post": {
+        "deprecated": true,
         "operationId": "postSellingTextByCourseCode",
         "summary": "Saves an object in the database",
         "description": "Saves changes to an object in the database",
