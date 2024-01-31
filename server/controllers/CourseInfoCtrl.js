@@ -12,7 +12,7 @@ const putCourseInfoByCourseCode = async (req, res) => {
   if (Object.keys(body).length === 0) {
     return res.send(400, 'Missing request body')
   }
-  log.info('Saving for a course: ', courseCode.toUpperCase(), 'Data: ', req.body)
+  log.info('Saving for a course: ', courseCode.toUpperCase(), 'Data: ', body)
 
   try {
     const {
