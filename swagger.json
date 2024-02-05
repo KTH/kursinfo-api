@@ -283,6 +283,7 @@
     },
     "/v1/courseWebLink/{courseCode}/": {
       "post": {
+        "deprecated": true,
         "operationId": "postCourseWebLink",
         "summary": "Saves a boolean flag isCourseWebLink in the database",
         "description": "Saves a boolean flag isCourseWebLink in the database: true, false",
