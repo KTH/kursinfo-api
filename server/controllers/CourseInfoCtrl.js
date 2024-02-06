@@ -70,7 +70,7 @@ const getCourseInfoByCourseCode = async (req, res) => {
       return res.send(201, doc)
     } else {
       log.info(`No entry found for courseCode: ${courseCode}`)
-      return res.send(204)
+      return res.send(404)
     }
   } catch (err) {
     log.error('Failed fetching courseInfo', { err })

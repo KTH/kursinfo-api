@@ -234,3 +234,16 @@ describe('putCourseInfo', () => {
     )
   })
 })
+
+describe('postCourseInfo', () => {
+  beforeEach(() => {
+    getExistingDocOrNewOne.mockResolvedValue(mockDoc)
+  })
+  test.todo('')
+})
+
+describe('patchCourseInfo', () => {
+  beforeEach(() => {
+    getExistingDocOrNewOne.mockResolvedValue(mockDoc)
+  })
+})
