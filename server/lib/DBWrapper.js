@@ -1,8 +1,7 @@
 const { CourseModel } = require('../models/courseModel')
 
 const getExistingDocOrNewOne = async courseCode => {
-  let exists = {}
-  exists = await CourseModel.findOne({ courseCode: courseCode.toUpperCase() })
+  const exists = await CourseModel.findOne({ courseCode: courseCode.toUpperCase() })
 
   if (exists) {
     return exists
