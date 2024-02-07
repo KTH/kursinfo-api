@@ -1,5 +1,6 @@
 const log = require('@kth/log')
-const { getExistingDocOrNewOne, getDoc } = require('../lib/DBWrapper')
+const { getExistingDocOrNewOne, getDoc, createDoc } = require('../lib/DBWrapper')
+const { toDBFormat, toHTTPFormat } = require('../util/CourseInfoMapper')
 
 const putCourseInfoByCourseCode = async (req, res) => {
   const courseCode = req.params.courseCode
@@ -78,7 +79,39 @@ const getCourseInfoByCourseCode = async (req, res) => {
   }
 }
 
+const postCourseInfoByCourseCode = async (req, res) => {
+  if (!req.body) {
+    return res.send(404, 'Missing request body')
+  }
+  const courseCode = req.body.courseCode
+  if (!courseCode) {
+    return res.send(404, "Missing parameter 'courseCode'")
+  }
+  try {
+    const doc = await getDoc(courseCode)
+    if (doc) {
+      return res.send(409, `CourseInfo for courseCode '${courseCode}' already exists. Use PATCH instead.`)
+    }
+    const docDBFormat = toDBFormat(req.body)
+    await createDoc(docDBFormat)
+    const newEntry = toHTTPFormat(docDBFormat)
+    return res.send(201, newEntry)
+    // 1. egentligen kan vi använda oss av create-methoden inuti createDoc, för att det vi vill skicka tilll res.send, INTE
+    //    är det objektet vi vill spara i databasen
+
+    // const dbDoc = CourseInfoMapper.toDBFormat(req.body)
+    // DBWrapper.createDoc(dbDoc)
+    // const response = CourseInfoMapper.toHTTPFormat(dbDoc)
+    // res.send(201, response)
+    // TODO gör om createDoc to use CourseModel.create
+  } catch (err) {
+    log.error({ err, courseCode }, 'Error when contacting database')
+    return err
+  }
+}
+
 module.exports = {
   putCourseInfoByCourseCode,
   getCourseInfoByCourseCode,
+  postCourseInfoByCourseCode,
 }

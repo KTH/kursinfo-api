@@ -1,4 +1,5 @@
 const { describe, expect, test } = require('@jest/globals')
+const { getCourseInfoByCourseCode, postCourseInfoByCourseCode } = require('../../server/controllers/CourseInfoCtrl')
 
 jest.mock('@kth/log', () => {
   return {
@@ -11,7 +12,10 @@ jest.mock('@kth/log', () => {
 const log = require('@kth/log')
 
 jest.mock('../../server/lib/DBWrapper')
-const { getExistingDocOrNewOne, getDoc } = require('../../server/lib/DBWrapper')
+const { getExistingDocOrNewOne, getDoc, createDoc } = require('../../server/lib/DBWrapper')
+
+jest.mock('../../server/util/CourseInfoMapper')
+const CourseInfoMapper = require('../../server/util/CourseInfoMapper')
 
 const mockDoc = {
   courseCode: 'SF1624',
@@ -75,7 +79,6 @@ describe('getCourseInfo', () => {
     getExistingDocOrNewOne.mockResolvedValue(mockDoc)
     getDoc.mockResolvedValue(mockDoc)
   })
-  const { getCourseInfoByCourseCode } = require('../../server/controllers/CourseInfoCtrl')
 
   test('returns 400 if no courseCode is given', async () => {
     const { res } = await reqHandler(getCourseInfoByCourseCode, { params: {} })
@@ -235,15 +238,174 @@ describe('putCourseInfo', () => {
   })
 })
 
-describe('postCourseInfo', () => {
+describe.only('postCourseInfo', () => {
   beforeEach(() => {
-    getExistingDocOrNewOne.mockResolvedValue(mockDoc)
+    // getExistingDocOrNewOne.mockResolvedValue(mockDoc)
   })
-  test.todo('')
+
+  test('returns status code 404 if no body present in request and returns result of res.send', async () => {
+    const { res, returnValue } = await reqHandler(postCourseInfoByCourseCode, {})
+
+    expect(res.send).toHaveBeenCalledWith(404, 'Missing request body')
+    expect(returnValue).toStrictEqual('sentSuccessful')
+  })
+
+  test('returns status code 404 if courseCode not present in request and returns result of res.send', async () => {
+    const { res, returnValue } = await reqHandler(postCourseInfoByCourseCode, { body: {} })
+
+    expect(res.send).toHaveBeenCalledWith(404, "Missing parameter 'courseCode'")
+    expect(returnValue).toStrictEqual('sentSuccessful')
+  })
+
+  test.each(['someCourseCode', 'someOtherCourseCode'])(
+    'calls DBWrapper.getDoc with courseCode: %p',
+    async courseCode => {
+      await reqHandler(postCourseInfoByCourseCode, { body: { courseCode } })
+
+      expect(getDoc).toHaveBeenCalledWith(courseCode)
+    }
+  )
+
+  test.each(['someCourseCode', 'someOtherCourseCode'])(
+    'returns status code 409 if courseInfo for courseCode "%p" already exists',
+    async courseCode => {
+      getDoc.mockResolvedValueOnce({ courseCode: 'someCourseCode' })
+
+      const { res, returnValue } = await reqHandler(postCourseInfoByCourseCode, { body: { courseCode } })
+
+      expect(res.send).toHaveBeenCalledWith(
+        409,
+        `CourseInfo for courseCode '${courseCode}' already exists. Use PATCH instead.`
+      )
+      expect(returnValue).toStrictEqual('sentSuccessful')
+    }
+  )
+
+  test.each(['someCourseCode', 'someOtherCourseCode'])('logs on error', async courseCode => {
+    const errorMessage = 'Some error from DB'
+    const error = new Error(errorMessage)
+
+    getDoc.mockRejectedValueOnce(error)
+    await reqHandler(postCourseInfoByCourseCode, { body: { courseCode } })
+
+    expect(log.error).toHaveBeenCalledWith({ err: error, courseCode }, 'Error when contacting database')
+  })
+
+  test('returns caught error (passes it on to express)', async () => {
+    const error = new Error('')
+    getDoc.mockRejectedValueOnce(error)
+    const { returnValue } = await reqHandler(postCourseInfoByCourseCode, { body: { courseCode: 'someCourseCode' } })
+
+    expect(returnValue).toStrictEqual(error)
+  })
+
+  describe('if at least courseCode is passed,', () => {
+    test.each([
+      {
+        courseCode: 'someCourseCode',
+        someParam: 'someParam',
+        sellingTextAuthor: 'sellingTextAuthor',
+      },
+      {
+        courseCode: 'someOtherCourseCode',
+        sellingTextAuthor: 'sellingTextAuthor2',
+      },
+    ])('calls CourseInfoMapper.toDBFormat with request body', async body => {
+      await reqHandler(postCourseInfoByCourseCode, { body })
+
+      expect(CourseInfoMapper.toDBFormat).toHaveBeenCalledWith(body)
+    })
+
+    test.each([
+      { courseCode: 'someCourseCode' },
+      { courseCode: 'someCourseCode', sellingTextAuthor: 'someSellingTextAuthor' },
+    ])('calls DBwrapper.createDoc with result from courseInfoMapper.toDBFormat', async dbFormat => {
+      CourseInfoMapper.toDBFormat.mockReturnValueOnce(dbFormat)
+
+      await reqHandler(postCourseInfoByCourseCode, { body: { courseCode: 'someCourseCode' } })
+
+      expect(createDoc).toHaveBeenCalledWith(dbFormat)
+    })
+
+    test.each([
+      { courseCode: 'someCourseCode' },
+      { courseCode: 'someCourseCode', sellingTextAuthor: 'someSellingTextAuthor' },
+    ])('calls CourseInfoMapper.toHTTPFormat with result from courseInfoMapper.toDBFormat', async dbFormat => {
+      createDoc.mockResolvedValueOnce(true)
+      CourseInfoMapper.toDBFormat.mockReturnValueOnce(dbFormat)
+
+      await reqHandler(postCourseInfoByCourseCode, { body: { courseCode: 'someCourseCode' } })
+
+      expect(CourseInfoMapper.toHTTPFormat).toHaveBeenCalledWith(dbFormat)
+    })
+
+    test.each([
+      { courseCode: 'someCourseCode' },
+      { courseCode: 'someCourseCode', sellingTextAuthor: 'someSellingTextAuthor' },
+    ])('calls res.send with 201 and result from courseInfoMapper.toHTTPFormat', async httpFormat => {
+      createDoc.mockResolvedValueOnce(true)
+
+      CourseInfoMapper.toHTTPFormat.mockReturnValueOnce(httpFormat)
+
+      const { res } = await reqHandler(postCourseInfoByCourseCode, { body: { courseCode: 'someCourseCode' } })
+
+      expect(res.send).toHaveBeenCalledWith(201, httpFormat)
+    })
+
+    test('result from res.send is returned', async () => {
+      createDoc.mockResolvedValueOnce(true)
+
+      const { returnValue } = await reqHandler(postCourseInfoByCourseCode, { body: { courseCode: 'someCourseCode' } })
+
+      expect(returnValue).toStrictEqual('sentSuccessful')
+    })
+
+    test.each(['somecourseCode', 'someOtherCourseCode'])(
+      'if createDoc rejects with error, calls log.error',
+      async courseCode => {
+        const errorMessage = 'Some error from DB'
+        const error = new Error(errorMessage)
+        createDoc.mockRejectedValueOnce(error)
+        await reqHandler(postCourseInfoByCourseCode, { body: { courseCode } })
+
+        expect(log.error).toHaveBeenCalledWith({ err: error, courseCode }, 'Error when contacting database')
+      }
+    )
+
+    // test.only('if createDoc rejects with error, CourseInfoMapper.toHTTPFormat is not called', async () => {
+    //   createDoc.mockRejectedValueOnce('error')
+
+    //   expect(reqHandler(postCourseInfoByCourseCode, { body: { courseCode: 'someCourseCode' } })).rejects.toMatch(
+    //     'error'
+    //   )
+
+    //   expect(CourseInfoMapper.toHTTPFormat).not.toHaveBeenCalled()
+    // })
+
+    //   test.each(['SF1624', 'SF1610'])('calls DBWrapper.createDoc', async courseCode => {
+    //     await reqHandler(postCourseInfoByCourseCode, { body: { courseCode } })
+
+    //     expect(createDoc).toHaveBeenCalledWith({ courseCode })
+    //   })
+
+    //   test.each(['sf1624', 'sf1610'])('calls DBWrapper.createDoc with uppercase courseCode', async courseCode => {
+    //     // createDoc.mockReturnValueOnce({courseCode})
+
+    //     await reqHandler(postCourseInfoByCourseCode, { body: { courseCode } })
+
+    //     expect(createDoc).toHaveBeenCalledWith({ courseCode: courseCode.toUpperCase() })
+    //   })
+
+    //   test('calls .save() on object returned from createDoc', async () => {
+
+    //   })
+
+    //   test.todo('calls res.send with response code 201 and created object')
+  })
 })
 
-describe('patchCourseInfo', () => {
-  beforeEach(() => {
-    getExistingDocOrNewOne.mockResolvedValue(mockDoc)
-  })
-})
+// describe('patchCourseInfo', () => {
+//   beforeEach(() => {
+//     getExistingDocOrNewOne.mockResolvedValue(mockDoc)
+//   })
+// })
