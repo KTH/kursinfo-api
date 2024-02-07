@@ -16,7 +16,7 @@ const getDoc = async courseCode => {
   return doc
 }
 
-const createDoc = courseInfo => new CourseModel(courseInfo)
+const createDoc = async courseInfo => CourseModel.create(courseInfo)
 
 module.exports = {
   getExistingDocOrNewOne,

@@ -1,6 +1,6 @@
 const log = require('@kth/log')
 const { getExistingDocOrNewOne, getDoc, createDoc } = require('../lib/DBWrapper')
-const { toDBFormat, toHTTPFormat } = require('../util/CourseInfoMapper')
+const { toDBFormat, toClientFormat } = require('../util/CourseInfoMapper')
 
 const putCourseInfoByCourseCode = async (req, res) => {
   const courseCode = req.params.courseCode
@@ -68,6 +68,7 @@ const getCourseInfoByCourseCode = async (req, res) => {
     doc = await getDoc(courseCode)
     if (doc) {
       log.info('Successfully fetched CourseInfo for courseCode: ', doc.courseCode, 'Data: ', doc)
+      // TODO:  use httpFormatter before response, change test to reflect
       return res.send(201, doc)
     } else {
       log.info(`No entry found for courseCode: ${courseCode}`)
@@ -79,13 +80,13 @@ const getCourseInfoByCourseCode = async (req, res) => {
   }
 }
 
-const postCourseInfoByCourseCode = async (req, res) => {
+const postCourseInfo = async (req, res) => {
   if (!req.body) {
-    return res.send(404, 'Missing request body')
+    return res.send(400, 'Missing request body')
   }
   const courseCode = req.body.courseCode
   if (!courseCode) {
-    return res.send(404, "Missing parameter 'courseCode'")
+    return res.send(400, "Missing parameter 'courseCode'")
   }
   try {
     const doc = await getDoc(courseCode)
@@ -94,16 +95,8 @@ const postCourseInfoByCourseCode = async (req, res) => {
     }
     const docDBFormat = toDBFormat(req.body)
     await createDoc(docDBFormat)
-    const newEntry = toHTTPFormat(docDBFormat)
+    const newEntry = toClientFormat(docDBFormat)
     return res.send(201, newEntry)
-    // 1. egentligen kan vi använda oss av create-methoden inuti createDoc, för att det vi vill skicka tilll res.send, INTE
-    //    är det objektet vi vill spara i databasen
-
-    // const dbDoc = CourseInfoMapper.toDBFormat(req.body)
-    // DBWrapper.createDoc(dbDoc)
-    // const response = CourseInfoMapper.toHTTPFormat(dbDoc)
-    // res.send(201, response)
-    // TODO gör om createDoc to use CourseModel.create
   } catch (err) {
     log.error({ err, courseCode }, 'Error when contacting database')
     return err
@@ -113,5 +106,5 @@ const postCourseInfoByCourseCode = async (req, res) => {
 module.exports = {
   putCourseInfoByCourseCode,
   getCourseInfoByCourseCode,
-  postCourseInfoByCourseCode,
+  postCourseInfo,
 }

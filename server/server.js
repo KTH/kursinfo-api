@@ -162,6 +162,9 @@ apiRoute.register(paths.api.postCourseWebLink, CourseWebLink.postCourseWebLink)
 apiRoute.register(paths.api.putCourseInfoByCourseCode, CourseInfo.putCourseInfoByCourseCode)
 apiRoute.register(paths.api.getCourseInfoByCourseCode, CourseInfo.getCourseInfoByCourseCode)
 
+// postCourseInfo
+apiRoute.register(paths.api.postCourseInfo, CourseInfo.postCourseInfo)
+
 server.use('/', apiRoute.getRouter())
 
 // Catch not found and errors
