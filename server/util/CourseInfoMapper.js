@@ -13,33 +13,38 @@ const toDBFormat = httpFormat => {
   return {
     courseCode: courseCode.toUpperCase(),
     imageInfo: imageInfo,
-    sellingText_en: sellingTexts.en ?? undefined,
-    sellingText_sv: sellingTexts.sv ?? undefined,
-    sellingTextAuthor: sellingTextAuthor ?? undefined,
-    supplementaryInfo_en: supplementaryInfos?.en ?? undefined,
-    supplementaryInfo_sv: supplementaryInfos?.sv ?? undefined,
-    courseDisposition_en: courseDispositions?.en ?? undefined,
-    courseDisposition_sv: courseDispositions?.sv ?? undefined,
+    sellingText_en: sellingTexts.en ?? '',
+    sellingText_sv: sellingTexts.sv ?? '',
+    sellingTextAuthor: sellingTextAuthor ?? '',
+    supplementaryInfo_en: supplementaryInfos?.en ?? '',
+    supplementaryInfo_sv: supplementaryInfos?.sv ?? '',
+    courseDisposition_en: courseDispositions?.en ?? '',
+    courseDisposition_sv: courseDispositions?.sv ?? '',
   }
 }
 
 const toClientFormat = dbFormat => {
-  return {
+  console.log(dbFormat, 'in client format')
+
+  const formattedDoc = {
+    courseCode: dbFormat.courseCode,
     sellingText: {
-      en: dbFormat.sellingText_en,
-      sv: dbFormat.sellingText_sv,
+      en: dbFormat.sellingText_en ?? '',
+      sv: dbFormat.sellingText_sv ?? '',
     },
     supplementaryInfo: {
-      en: dbFormat.supplementaryInfo_en,
-      sv: dbFormat.supplementaryInfo_sv,
+      en: dbFormat.supplementaryInfo_en ?? '',
+      sv: dbFormat.supplementaryInfo_sv ?? '',
     },
     courseDisposition: {
-      en: dbFormat.courseDisposition_en,
-      sv: dbFormat.courseDisposition_sv,
+      en: dbFormat.courseDisposition_en ?? '',
+      sv: dbFormat.courseDisposition_sv ?? '',
     },
-    sellingTextAuthor: dbFormat.sellingTextAuthor,
-    imageInfo: dbFormat.imageInfo,
+    sellingTextAuthor: dbFormat.sellingTextAuthor ?? '',
+    imageInfo: dbFormat.imageInfo ?? '',
   }
+  console.log(formattedDoc, 'formatted doc')
+  return formattedDoc
 }
 
 module.exports = {
