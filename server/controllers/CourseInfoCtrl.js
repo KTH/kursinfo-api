@@ -68,8 +68,8 @@ const getCourseInfoByCourseCode = async (req, res) => {
     doc = await getDoc(courseCode)
     if (doc) {
       log.info('Successfully fetched CourseInfo for courseCode: ', doc.courseCode, 'Data: ', doc)
-      // TODO:  use httpFormatter before response, change test to reflect
-      return res.send(201, doc)
+      const clientResponse = toClientFormat(doc)
+      return res.send(201, clientResponse)
     } else {
       log.info(`No entry found for courseCode: ${courseCode}`)
       return res.send(404)

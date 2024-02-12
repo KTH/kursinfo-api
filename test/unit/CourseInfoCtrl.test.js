@@ -29,6 +29,15 @@ const mockDoc = {
   save: jest.fn(),
 }
 
+const mockClientResponseDoc = {
+  courseCode: 'SF1624',
+  sellingText_en: 'fooEN',
+  sellingText_sv: 'fooSV',
+  sellingText: { en: 'fooEV', sv: 'fooSV' },
+  courseDisposition: { en: 'courseDisposition text en', sv: 'courseDisposition text sv' },
+  supplementaryInfo: { en: 'supplmentaryInfo text en', sv: 'supplmentaryInfo text sv' },
+}
+
 const newDoc = {
   sellingText: { en: 'New selling text', sv: 'Ny säljtext' },
   courseDisposition: { en: 'New course disposition text', sv: 'Ny kursuplägg text' },
@@ -93,9 +102,10 @@ describe('getCourseInfo', () => {
   })
 
   test('returns CourseInfo Object when called', async () => {
+    CourseInfoMapper.toClientFormat.mockReturnValueOnce(mockClientResponseDoc)
     const { res } = await reqHandler(getCourseInfoByCourseCode, { params: { courseCode: mockDoc.courseCode } })
 
-    expect(res.send).toHaveBeenCalledWith(201, mockDoc)
+    expect(res.send).toHaveBeenCalledWith(201, mockClientResponseDoc)
   })
   test('returns 404 if courseCode doesnt exist', async () => {
     getDoc.mockImplementationOnce(() => undefined)
@@ -138,7 +148,7 @@ describe('getCourseInfo', () => {
 //                      putCourseInfo                                                    *
 //                                                                                       *
 //****************************************************************************************/
-describe.skip('putCourseInfo', () => {
+describe('putCourseInfo', () => {
   beforeEach(() => {
     getExistingDocOrNewOne.mockResolvedValue(mockDoc)
   })
@@ -256,11 +266,6 @@ describe.skip('putCourseInfo', () => {
 //****************************************************************************************/
 
 describe('postCourseInfo', () => {
-  beforeEach(() => {
-    // getExistingDocOrNewOne.mockResolvedValue(mockDoc)
-    // CourseInfoMapper.toDBFormat.mockReturnValue({ courseCode: 'someCourseCode' })
-    // CourseInfoMapper.toClientFormat.mockReturnValue({ courseCode: 'someCourseCode' })
-  })
   afterEach(() => {
     jest.resetAllMocks()
   })

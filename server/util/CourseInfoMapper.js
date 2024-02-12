@@ -24,8 +24,6 @@ const toDBFormat = httpFormat => {
 }
 
 const toClientFormat = dbFormat => {
-  console.log(dbFormat, 'in client format')
-
   const formattedDoc = {
     courseCode: dbFormat.courseCode,
     sellingText: {
@@ -43,7 +41,6 @@ const toClientFormat = dbFormat => {
     sellingTextAuthor: dbFormat.sellingTextAuthor ?? '',
     imageInfo: dbFormat.imageInfo ?? '',
   }
-  console.log(formattedDoc, 'formatted doc')
   return formattedDoc
 }
 

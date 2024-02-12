@@ -32,6 +32,15 @@ const clientFormatExtraFieldsDoc = {
   extraField: 'extra field info',
 }
 
+const clientFormatNullFieldsDoc = {
+  courseCode: 'SF1624',
+  sellingText: { en: 'fooEN', sv: 'fooSV' },
+  courseDisposition: { en: 'courseDisposition text en', sv: 'courseDisposition text sv' },
+  supplementaryInfo: { en: null, sv: null },
+  sellingTextAuthor: 'Ada Lovelace',
+  imageInfo: 'someImageInfo',
+}
+
 const clientFormatMissingFieldsDoc = {
   courseCode: 'SF1624',
   sellingText: { en: 'fooEN', sv: 'fooSV' },
@@ -96,6 +105,10 @@ describe('toDBFormat', () => {
   })
   test('empty fields are empty strings in DB format', () => {
     const formattedDoc = toDBFormat(clientFormatMissingFieldsDoc)
+    expect(formattedDoc).toStrictEqual(dbFormatEmptyFields)
+  })
+  test('null fields are empty strings', () => {
+    const formattedDoc = toDBFormat(clientFormatNullFieldsDoc)
     expect(formattedDoc).toStrictEqual(dbFormatEmptyFields)
   })
 })
