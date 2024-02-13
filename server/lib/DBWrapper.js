@@ -11,14 +11,14 @@ const getExistingDocOrNewOne = async courseCode => {
 }
 
 const getDoc = async courseCode => {
-  console.log(courseCode, 'courseCode in Dbwrapper')
-  let doc = await CourseModel.findOne({ courseCode: courseCode.toUpperCase() }).exec()
+  let doc = await CourseModel.findOne({ courseCode: courseCode.toUpperCase() })
   return doc
 }
 
 const createDoc = async courseInfo => CourseModel.create(courseInfo)
 
-const updateDoc = async (courseCode, newInfo) => CourseModel.updateOne({ courseCode }, newInfo)
+const updateDoc = async (courseCode, newInfo) =>
+  CourseModel.updateOne({ courseCode: courseCode.toUpperCase() }, newInfo)
 
 module.exports = {
   getExistingDocOrNewOne,
