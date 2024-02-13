@@ -1,6 +1,3 @@
-// TEST that extra fields arent added
-// TEST that empty fields are null in DB??
-
 const toDBFormat = httpFormat => {
   const {
     sellingText: sellingTexts,
@@ -10,17 +7,20 @@ const toDBFormat = httpFormat => {
     courseDisposition: courseDispositions,
     courseCode,
   } = httpFormat
-  return {
+
+  const newFile = {
     courseCode: courseCode.toUpperCase(),
-    imageInfo: imageInfo,
-    sellingText_en: sellingTexts.en ?? '',
-    sellingText_sv: sellingTexts.sv ?? '',
-    sellingTextAuthor: sellingTextAuthor ?? '',
-    supplementaryInfo_en: supplementaryInfos?.en ?? '',
-    supplementaryInfo_sv: supplementaryInfos?.sv ?? '',
-    courseDisposition_en: courseDispositions?.en ?? '',
-    courseDisposition_sv: courseDispositions?.sv ?? '',
+    imageInfo: imageInfo ?? undefined,
+    sellingText_en: sellingTexts.en ?? undefined,
+    sellingText_sv: sellingTexts.sv ?? undefined,
+    sellingTextAuthor: sellingTextAuthor ?? undefined,
+    supplementaryInfo_en: supplementaryInfos?.en ?? undefined,
+    supplementaryInfo_sv: supplementaryInfos?.sv ?? undefined,
+    courseDisposition_en: courseDispositions?.en ?? undefined,
+    courseDisposition_sv: courseDispositions?.sv ?? undefined,
   }
+
+  return newFile
 }
 
 const toClientFormat = dbFormat => {

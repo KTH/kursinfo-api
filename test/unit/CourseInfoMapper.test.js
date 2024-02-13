@@ -55,8 +55,8 @@ const dbFormatEmptyFields = {
   sellingText_sv: 'fooSV',
   courseDisposition_en: 'courseDisposition text en',
   courseDisposition_sv: 'courseDisposition text sv',
-  supplementaryInfo_en: '',
-  supplementaryInfo_sv: '',
+  supplementaryInfo_en: undefined,
+  supplementaryInfo_sv: undefined,
   sellingTextAuthor: 'Ada Lovelace',
   imageInfo: 'someImageInfo',
 }
@@ -93,7 +93,7 @@ const clientFormatEmptyFieldsDoc = {
   imageInfo: 'someImageInfo',
 }
 
-describe('toDBFormat', () => {
+describe.only('toDBFormat', () => {
   test('returns correct format with appropriate input', () => {
     const formattedDoc = toDBFormat(clientFormatDoc)
 
@@ -113,7 +113,7 @@ describe('toDBFormat', () => {
   })
 })
 
-describe('toClientFormat', () => {
+describe.only('toClientFormat', () => {
   test('returns correct format with appropriate input', () => {
     const formattedDoc = toClientFormat(dbFormatDoc)
     expect(formattedDoc).toStrictEqual(clientFormatDoc)

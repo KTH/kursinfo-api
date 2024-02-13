@@ -1,18 +1,15 @@
 const log = require('@kth/log')
-const { getExistingDocOrNewOne, getDoc, createDoc } = require('../lib/DBWrapper')
+const { getExistingDocOrNewOne, getDoc, createDoc, updateDoc } = require('../lib/DBWrapper')
 const { toDBFormat, toClientFormat } = require('../util/CourseInfoMapper')
 
 const putCourseInfoByCourseCode = async (req, res) => {
   const courseCode = req.params.courseCode
   const body = req.body
 
-  if (!courseCode) {
-    return res.send(400, "Missing parameter 'courseCode'")
-  }
+  if (!courseCode) return res.send(400, "Missing parameter 'courseCode'")
 
-  if (Object.keys(body).length === 0) {
-    return res.send(400, 'Missing request body')
-  }
+  if (Object.keys(body).length === 0) return res.send(400, 'Missing request body')
+
   log.info('Saving for a course: ', courseCode.toUpperCase(), 'Data: ', body)
 
   try {
@@ -60,9 +57,8 @@ const putCourseInfoByCourseCode = async (req, res) => {
 
 const getCourseInfoByCourseCode = async (req, res) => {
   const courseCode = req.params.courseCode
-  if (!courseCode) {
-    return res.send(400, "Missing parameter 'courseCode'")
-  }
+  if (!courseCode) return res.send(400, "Missing parameter 'courseCode'")
+
   try {
     let doc = {}
     doc = await getDoc(courseCode)
@@ -81,13 +77,11 @@ const getCourseInfoByCourseCode = async (req, res) => {
 }
 
 const postCourseInfo = async (req, res) => {
-  if (!req.body) {
-    return res.send(400, 'Missing request body')
-  }
+  if (!req.body) return res.send(400, 'Missing request body')
+
   const courseCode = req.body.courseCode
-  if (!courseCode) {
-    return res.send(400, "Missing parameter 'courseCode'")
-  }
+  if (!courseCode) return res.send(400, "Missing parameter 'courseCode'")
+
   try {
     const doc = await getDoc(courseCode)
     if (doc) {
@@ -103,8 +97,41 @@ const postCourseInfo = async (req, res) => {
   }
 }
 
+const patchCourseInfo = async (req, res) => {
+  if (!req.body) return res.send(400, 'Missing request body')
+
+  const courseCode = req.body.courseCode
+  if (!courseCode) return res.send(400, "Missing parameter 'courseCode'")
+
+  try {
+    const originalDoc = await getDoc(courseCode)
+    if (!originalDoc) {
+      return res.send(404, `CourseInfo for courseCode '${courseCode}' does not exist. Use POST instead.`)
+    }
+
+    const updatedFields = toDBFormat(req.body)
+
+    const updateResponse = await updateDoc(courseCode, updatedFields)
+
+    if (!updateResponse.acknowledged) {
+      throw new Error('Failed updating entry: ', courseCode)
+    }
+
+    const updatedDoc = await getDoc(courseCode)
+
+    // ^TESTED
+
+    const clientFormatUpdatedDoc = toClientFormat(updatedDoc)
+    return res.send(201, clientFormatUpdatedDoc)
+  } catch (err) {
+    log.error({ err, courseCode }, 'Error when contacting database')
+    return err
+  }
+}
+
 module.exports = {
   putCourseInfoByCourseCode,
   getCourseInfoByCourseCode,
   postCourseInfo,
+  patchCourseInfo,
 }

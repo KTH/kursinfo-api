@@ -18,8 +18,11 @@ const getDoc = async courseCode => {
 
 const createDoc = async courseInfo => CourseModel.create(courseInfo)
 
+const updateDoc = async (courseCode, newInfo) => CourseModel.updateOne({ courseCode }, newInfo)
+
 module.exports = {
   getExistingDocOrNewOne,
   getDoc,
   createDoc,
+  updateDoc,
 }

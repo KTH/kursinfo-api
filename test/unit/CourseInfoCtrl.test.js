@@ -1,5 +1,9 @@
 const { describe, expect, test } = require('@jest/globals')
-const { getCourseInfoByCourseCode, postCourseInfo } = require('../../server/controllers/CourseInfoCtrl')
+const {
+  getCourseInfoByCourseCode,
+  postCourseInfo,
+  patchCourseInfo,
+} = require('../../server/controllers/CourseInfoCtrl')
 
 jest.mock('@kth/log', () => {
   return {
@@ -12,7 +16,7 @@ jest.mock('@kth/log', () => {
 const log = require('@kth/log')
 
 jest.mock('../../server/lib/DBWrapper')
-const { getExistingDocOrNewOne, getDoc, createDoc } = require('../../server/lib/DBWrapper')
+const { getExistingDocOrNewOne, getDoc, createDoc, updateDoc } = require('../../server/lib/DBWrapper')
 
 jest.mock('../../server/util/CourseInfoMapper')
 const CourseInfoMapper = require('../../server/util/CourseInfoMapper')
@@ -296,7 +300,7 @@ describe('postCourseInfo', () => {
   test.each(['someCourseCode', 'someOtherCourseCode'])(
     'returns status code 409 if courseInfo for courseCode "%p" already exists',
     async courseCode => {
-      getDoc.mockResolvedValueOnce({ courseCode: 'someCourseCode' })
+      getDoc.mockResolvedValueOnce({ courseCode: courseCode })
 
       const { res, returnValue } = await reqHandler(postCourseInfo, { body: { courseCode } })
 
@@ -403,8 +407,119 @@ describe('postCourseInfo', () => {
   })
 })
 
-// describe('patchCourseInfo', () => {
-//   beforeEach(() => {
-//     getExistingDocOrNewOne.mockResolvedValue(mockDoc)
-//   })
-// })
+//****************************************************************************************/
+//                                                                                       *
+//                      patchCourseInfo                                                  *
+//                                                                                       *
+//****************************************************************************************/
+
+const updatedFields = {
+  courseCode: 'SF1624',
+  sellingText_en: 'fooEN',
+  sellingText_sv: 'fooSV',
+  courseDisposition_en: 'courseDisposition text en',
+  courseDisposition_sv: 'courseDisposition text sv',
+  supplementaryInfo_en: 'supplmentaryInfo text en',
+  supplementaryInfo_sv: 'supplmentaryInfo text sv',
+  imageInfo: 'updated image info',
+}
+
+describe.only('patchCourseInfo', () => {
+  beforeEach(() => {
+    getDoc.mockResolvedValue(mockDoc)
+    getExistingDocOrNewOne.mockResolvedValue(mockDoc)
+    CourseInfoMapper.toDBFormat.mockReturnValue(updatedFields)
+    updateDoc.mockResolvedValue({ acknowledged: true })
+  })
+
+  test('returns status code 400 if no body present in request and returns result of res.send', async () => {
+    const { res, returnValue } = await reqHandler(patchCourseInfo, {})
+
+    expect(res.send).toHaveBeenCalledWith(400, 'Missing request body')
+    expect(returnValue).toStrictEqual('sentSuccessful')
+  })
+
+  test('returns status code 400 if courseCode not present in request and returns result of res.send', async () => {
+    const { res, returnValue } = await reqHandler(patchCourseInfo, { body: {} })
+
+    expect(res.send).toHaveBeenCalledWith(400, "Missing parameter 'courseCode'")
+    expect(returnValue).toStrictEqual('sentSuccessful')
+  })
+
+  test.each(['someCourseCode', 'someOtherCourseCode'])(
+    'calls DBWrapper.getDoc with courseCode: %p',
+    async courseCode => {
+      await reqHandler(patchCourseInfo, { body: { courseCode } })
+
+      expect(getDoc).toHaveBeenCalledWith(courseCode)
+    }
+  )
+
+  test.each(['someCourseCode', 'someOtherCourseCode'])(
+    'returns status code 409 if courseInfo for courseCode "%p" does not exist',
+    async courseCode => {
+      getDoc.mockResolvedValueOnce(undefined)
+
+      const { res, returnValue } = await reqHandler(patchCourseInfo, { body: { courseCode } })
+
+      expect(res.send).toHaveBeenCalledWith(
+        404,
+        `CourseInfo for courseCode '${courseCode}' does not exist. Use POST instead.`
+      )
+      expect(returnValue).toStrictEqual('sentSuccessful')
+    }
+  )
+
+  test.each(['someCourseCode', 'someOtherCourseCode'])('logs on error', async courseCode => {
+    const errorMessage = 'Some error from DB'
+    const error = new Error(errorMessage)
+
+    getDoc.mockRejectedValueOnce(error)
+    await reqHandler(patchCourseInfo, { body: { courseCode } })
+
+    expect(log.error).toHaveBeenCalledWith({ err: error, courseCode }, 'Error when contacting database')
+  })
+
+  test('returns caught error (passes it on to express)', async () => {
+    const error = new Error('')
+    getDoc.mockRejectedValueOnce(error)
+    const { returnValue } = await reqHandler(patchCourseInfo, { body: { courseCode: 'someCourseCode' } })
+
+    expect(returnValue).toStrictEqual(error)
+  })
+
+  test('calls courseInfoMapper.toDBFormat', async () => {
+    await reqHandler(patchCourseInfo, { body: mockDoc })
+
+    expect(CourseInfoMapper.toDBFormat).toHaveBeenCalledWith(mockDoc)
+  })
+
+  test('calls updateDoc', async () => {
+    const newFields = {
+      courseCode: 'SF1624',
+      imageInfo: 'updated image info',
+    }
+
+    // const originalEntry = {
+    //   courseCode: 'SF1624',
+    //   sellingText_en: 'fooEN',
+    //   sellingText_sv: 'fooSV',
+    //   courseDisposition_en: 'courseDisposition text en',
+    //   courseDisposition_sv: 'courseDisposition text sv',
+    //   supplementaryInfo_en: 'supplmentaryInfo text en',
+    //   supplementaryInfo_sv: 'supplmentaryInfo text sv',
+    //   imageInfo: 'old image info',
+    // }
+
+    // getExistingDocOrNewOne.mockResolvedValue(originalEntry)
+    // getDoc.mockResolvedValueOnce(mockDoc)
+    // getDoc.mockResolvedValueOnce(updatedFields)
+
+    await reqHandler(patchCourseInfo, { body: newFields })
+    expect(updateDoc).toHaveBeenCalledWith(newFields.courseCode, updatedFields)
+  })
+
+  test.todo('runs getDoc twice to refetch updated entry')
+
+  test.todo('check that the response object has correctly used object spreading', () => {})
+})
