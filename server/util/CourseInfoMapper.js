@@ -11,8 +11,8 @@ const toDBFormat = httpFormat => {
   const newFile = {
     courseCode: courseCode.toUpperCase(),
     imageInfo: imageInfo ?? undefined,
-    sellingText_en: sellingTexts.en ?? undefined,
-    sellingText_sv: sellingTexts.sv ?? undefined,
+    sellingText_en: sellingTexts?.en ?? undefined,
+    sellingText_sv: sellingTexts?.sv ?? undefined,
     sellingTextAuthor: sellingTextAuthor ?? undefined,
     supplementaryInfo_en: supplementaryInfos?.en ?? undefined,
     supplementaryInfo_sv: supplementaryInfos?.sv ?? undefined,

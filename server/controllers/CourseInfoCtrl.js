@@ -119,8 +119,6 @@ const patchCourseInfo = async (req, res) => {
 
     const updatedDoc = await getDoc(courseCode)
 
-    // ^TESTED
-
     const clientFormatUpdatedDoc = toClientFormat(updatedDoc)
     return res.send(201, clientFormatUpdatedDoc)
   } catch (err) {
