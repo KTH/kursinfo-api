@@ -70,9 +70,10 @@ function buildRes(overrides = {}) {
         return res
       })
       .mockName('json'),
-    status: jest.fn(() => res).mockName('status'),
     type: jest.fn(() => res).mockName('type'),
     send: jest.fn(() => 'sentSuccessful').mockName('send'),
+    sendStatus: jest.fn(() => 'sendStatus').mockName('sendStatus'),
+    status: jest.fn().mockReturnThis().mockName('status'),
     render: jest.fn(() => res).mockName('render'),
 
     ...overrides,
@@ -99,17 +100,20 @@ describe('getCourseInfo', () => {
   })
 
   test('returns 400 if no courseCode is given', async () => {
-    const { res } = await reqHandler(getCourseInfoByCourseCode, { params: {} })
+    const { res, returnValue } = await reqHandler(getCourseInfoByCourseCode, { params: {} })
 
-    expect(res.send).toHaveBeenCalledWith(400, "Missing parameter 'courseCode'")
+    expect(res.status).toHaveBeenCalledWith(400)
+    expect(res.send).toHaveBeenCalledWith("Missing parameter 'courseCode'")
+    expect(returnValue).toStrictEqual('sentSuccessful')
   })
 
-  test('returns 404 if courseCode doesnt exist', async () => {
+  test(`returns 404 if courseCode does not exist`, async () => {
     getDoc.mockImplementationOnce(() => undefined)
 
-    const { res } = await reqHandler(getCourseInfoByCourseCode, { params: { courseCode: '11111' } })
+    const { res, returnValue } = await reqHandler(getCourseInfoByCourseCode, { params: { courseCode: '11111' } })
 
-    expect(res.send).toHaveBeenCalledWith(404)
+    expect(res.sendStatus).toHaveBeenCalledWith(404)
+    expect(returnValue).toStrictEqual('sendStatus')
   })
 
   test('logs if courseCode doesnt exist', async () => {
@@ -144,9 +148,13 @@ describe('getCourseInfo', () => {
 
   test('returns CourseInfo Object when called', async () => {
     CourseInfoMapper.toClientFormat.mockReturnValueOnce(mockClientResponseDoc)
-    const { res } = await reqHandler(getCourseInfoByCourseCode, { params: { courseCode: mockDoc.courseCode } })
+    const { res, returnValue } = await reqHandler(getCourseInfoByCourseCode, {
+      params: { courseCode: mockDoc.courseCode },
+    })
 
-    expect(res.send).toHaveBeenCalledWith(200, mockClientResponseDoc)
+    expect(res.status).toHaveBeenCalledWith(200)
+    expect(res.send).toHaveBeenCalledWith(mockClientResponseDoc)
+    expect(returnValue).toStrictEqual('sentSuccessful')
   })
 })
 
@@ -164,14 +172,16 @@ describe('postCourseInfo', () => {
   test('returns status code 400 if no body present in request and returns result of res.send', async () => {
     const { res, returnValue } = await reqHandler(postCourseInfo, {})
 
-    expect(res.send).toHaveBeenCalledWith(400, 'Missing request body')
+    expect(res.status).toHaveBeenCalledWith(400)
+    expect(res.send).toHaveBeenCalledWith('Missing request body')
     expect(returnValue).toStrictEqual('sentSuccessful')
   })
 
   test('returns status code 400 if courseCode not present in request and returns result of res.send', async () => {
     const { res, returnValue } = await reqHandler(postCourseInfo, { body: {} })
 
-    expect(res.send).toHaveBeenCalledWith(400, "Missing parameter 'courseCode'")
+    expect(res.status).toHaveBeenCalledWith(400)
+    expect(res.send).toHaveBeenCalledWith("Missing parameter 'courseCode'")
     expect(returnValue).toStrictEqual('sentSuccessful')
   })
 
@@ -191,8 +201,8 @@ describe('postCourseInfo', () => {
 
       const { res, returnValue } = await reqHandler(postCourseInfo, { body: { courseCode } })
 
+      expect(res.status).toHaveBeenCalledWith(409)
       expect(res.send).toHaveBeenCalledWith(
-        409,
         `CourseInfo for courseCode '${courseCode}' already exists. Use PATCH instead.`
       )
       expect(returnValue).toStrictEqual('sentSuccessful')
@@ -258,18 +268,14 @@ describe('postCourseInfo', () => {
     test.each([
       { courseCode: 'someCourseCode' },
       { courseCode: 'someCourseCode', sellingTextAuthor: 'someSellingTextAuthor' },
-    ])('calls res.send with 201 and result from courseInfoMapper.toClientFormat', async httpFormat => {
+    ])('calls res.status/send with 201 and result from courseInfoMapper.toClientFormat', async httpFormat => {
       createDoc.mockResolvedValueOnce(true)
       CourseInfoMapper.toClientFormat.mockReturnValueOnce(httpFormat)
-      const { res } = await reqHandler(postCourseInfo, { body: { courseCode: 'someCourseCode' } })
-      expect(res.send).toHaveBeenCalledWith(201, httpFormat)
-    })
 
-    test('result from res.send is returned', async () => {
-      createDoc.mockResolvedValueOnce(true)
+      const { res, returnValue } = await reqHandler(postCourseInfo, { body: { courseCode: 'someCourseCode' } })
 
-      const { returnValue } = await reqHandler(postCourseInfo, { body: { courseCode: 'someCourseCode' } })
-
+      expect(res.status).toHaveBeenCalledWith(201)
+      expect(res.send).toHaveBeenCalledWith(httpFormat)
       expect(returnValue).toStrictEqual('sentSuccessful')
     })
 
@@ -323,13 +329,15 @@ describe('patchCourseInfoByCourseCode', () => {
 
   test('returns status code 400 if no body present in request and returns result of res.send', async () => {
     const { res, returnValue } = await reqHandler(patchCourseInfoByCourseCode, {})
-    expect(res.send).toHaveBeenCalledWith(400, 'Missing request body')
+    expect(res.status).toHaveBeenCalledWith(400)
+    expect(res.send).toHaveBeenCalledWith('Missing request body')
     expect(returnValue).toStrictEqual('sentSuccessful')
   })
 
   test('returns status code 400 if courseCode not present in request and returns result of res.send', async () => {
     const { res, returnValue } = await reqHandler(patchCourseInfoByCourseCode, { body: {} })
-    expect(res.send).toHaveBeenCalledWith(400, "Missing parameter 'courseCode'")
+    expect(res.status).toHaveBeenCalledWith(400)
+    expect(res.send).toHaveBeenCalledWith("Missing parameter 'courseCode'")
     expect(returnValue).toStrictEqual('sentSuccessful')
   })
 
@@ -349,8 +357,8 @@ describe('patchCourseInfoByCourseCode', () => {
 
       const { res, returnValue } = await reqHandler(patchCourseInfoByCourseCode, { body: { courseCode } })
 
+      expect(res.status).toHaveBeenCalledWith(404)
       expect(res.send).toHaveBeenCalledWith(
-        404,
         `CourseInfo for courseCode '${courseCode}' does not exist. Use POST instead.`
       )
       expect(returnValue).toStrictEqual('sentSuccessful')
@@ -434,6 +442,7 @@ describe('patchCourseInfoByCourseCode', () => {
   test('responds with 201 and updated doc in clientFormat', async () => {
     CourseInfoMapper.toClientFormat.mockReturnValue(updatedFields)
     const { res } = await reqHandler(patchCourseInfoByCourseCode, { body: newFields })
-    expect(res.send).toBeCalledWith(201, updatedFields)
+    expect(res.status).toBeCalledWith(201)
+    expect(res.send).toHaveBeenCalledWith(updatedFields)
   })
 })
