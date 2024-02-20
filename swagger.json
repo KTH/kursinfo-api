@@ -162,6 +162,44 @@
         ]
       }
     },
+    "/v1/courseInfo/": {
+      "post": {
+        "operationId": "postCourseInfo",
+        "summary": "Creates an object in the database",
+        "description": "Creates an object in the database",
+        "parameters": [
+          {
+            "name": "courseInfo",
+            "in": "body",
+            "description": "courseInfo to create",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CourseInfo"
+            }
+          }
+        ],
+        "tags": ["v1"],
+        "responses": {
+          "201": {
+            "description": "A successful creation",
+            "schema": {
+              "$ref": "#/definitions/CourseInfo"
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": ["write"]
+          }
+        ]
+      }
+    },
     "/v1/courseInfo/{courseCode}/": {
       "get": {
         "operationId": "getCourseInfoByCourseCode",
@@ -218,49 +256,14 @@
             "description": "courseInfo to save",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/CourseModel"
+              "$ref": "#/definitions/PartialCourseInfo"
             }
           }
         ],
-
         "tags": ["v1"],
         "responses": {
           "200": {
             "description": "A successful save"
-          },
-          "default": {
-            "description": "Unexpected error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        },
-        "security": [
-          {
-            "api_key": ["write"]
-          }
-        ]
-      },
-      "post": {
-        "operationId": "postCourseInfo",
-        "summary": "Creates an object in the database",
-        "description": "Creates an object in the database",
-        "parameters": [
-          {
-            "name": "courseInfo",
-            "in": "body",
-            "description": "courseInfo to create",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/CourseInfo"
-            }
-          }
-        ],
-
-        "tags": ["v1"],
-        "responses": {
-          "201": {
-            "description": "A successful creation"
           },
           "default": {
             "description": "Unexpected error",
@@ -293,11 +296,10 @@
             "description": "courseInfo to save",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/CourseInfo"
+              "$ref": "#/definitions/PartialCourseInfo"
             }
           }
         ],
-
         "tags": ["v1"],
         "responses": {
           "200": {
@@ -463,19 +465,61 @@
     "CourseInfo": {
       "type": "object",
       "required": ["courseCode"],
-      "properties": {
-        "courseCode": {
-          "type": "string",
-          "description": "Unique course identifier representing course code, t.e, SF1624"
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "courseCode": {
+              "type": "string",
+              "description": "Unique course identifier representing course code, t.e, SF1624"
+            }
+          }
         },
+        {
+          "$ref": "#/definitions/PartialCourseInfo"
+        }
+      ]
+    },
+    "PartialCourseInfo": {
+      "type": "object",
+      "properties": {
         "sellingText": {
-          "en": {
-            "type": "string",
-            "description": "Selling text in English."
-          },
-          "sv": {
-            "type": "string",
-            "description": "Selling text in Swedish."
+          "type": "object",
+          "properties": {
+            "en": {
+              "type": "string",
+              "description": "Selling text in English."
+            },
+            "sv": {
+              "type": "string",
+              "description": "Selling text in Swedish."
+            }
+          }
+        },
+        "courseDisposition": {
+          "type": "object",
+          "properties": {
+            "en": {
+              "type": "string",
+              "description": "The courses disposition in English."
+            },
+            "sv": {
+              "type": "string",
+              "description": "The courses disposition in Swedish."
+            }
+          }
+        },
+        "supplementaryInfo": {
+          "type": "object",
+          "properties": {
+            "en": {
+              "type": "string",
+              "description": "Supplementary info regarding the course in English."
+            },
+            "sv": {
+              "type": "string",
+              "description": "Supplementary info regarding the course in Swedish."
+            }
           }
         },
         "imageInfo": {
@@ -485,30 +529,9 @@
         "sellingTextAuthor": {
           "type": "string",
           "description": "The author's kthId to save"
-        },
-        "courseDisposition": {
-          "en": {
-            "type": "string",
-            "description": "The courses disposition in English."
-          },
-          "sv": {
-            "type": "string",
-            "description": "The courses disposition in Swedish."
-          }
-        },
-        "supplementaryInfo": {
-          "en": {
-            "type": "string",
-            "description": "Supplementary info regarding the course in English."
-          },
-          "sv": {
-            "type": "string",
-            "description": "Supplementary info regarding the course in Swedish."
-          }
         }
       }
     },
-
     "Error": {
       "properties": {
         "code": {
