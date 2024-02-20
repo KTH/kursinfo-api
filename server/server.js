@@ -160,7 +160,7 @@ apiRoute.register(paths.api.postImageInfo, ImageInfo.postImageInfo)
 apiRoute.register(paths.api.postCourseWebLink, CourseWebLink.postCourseWebLink)
 
 // patchCourseInfo
-apiRoute.register(path.api.patchCourseInfo, CourseInfo.patchCourseInfo)
+apiRoute.register(paths.api.patchCourseInfo, CourseInfo.patchCourseInfo)
 
 // putCourseInfo
 apiRoute.register(paths.api.putCourseInfoByCourseCode, CourseInfo.putCourseInfoByCourseCode)
