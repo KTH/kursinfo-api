@@ -16,7 +16,7 @@ jest.mock('@kth/log', () => {
 const log = require('@kth/log')
 
 jest.mock('../../server/lib/DBWrapper')
-const { getExistingDocOrNewOne, getDoc, createDoc, updateDoc } = require('../../server/lib/DBWrapper')
+const { getDoc, createDoc, updateDoc } = require('../../server/lib/DBWrapper')
 
 jest.mock('../../server/util/CourseInfoMapper')
 const CourseInfoMapper = require('../../server/util/CourseInfoMapper')
@@ -95,7 +95,6 @@ async function reqHandler(endpoint, req, overrides = {}) {
 
 describe('getCourseInfo', () => {
   beforeEach(() => {
-    getExistingDocOrNewOne.mockResolvedValue(mockDoc)
     getDoc.mockResolvedValue(mockDoc)
   })
 
@@ -105,12 +104,6 @@ describe('getCourseInfo', () => {
     expect(res.send).toHaveBeenCalledWith(400, "Missing parameter 'courseCode'")
   })
 
-  test('returns CourseInfo Object when called', async () => {
-    CourseInfoMapper.toClientFormat.mockReturnValueOnce(mockClientResponseDoc)
-    const { res } = await reqHandler(getCourseInfoByCourseCode, { params: { courseCode: mockDoc.courseCode } })
-
-    expect(res.send).toHaveBeenCalledWith(201, mockClientResponseDoc)
-  })
   test('returns 404 if courseCode doesnt exist', async () => {
     getDoc.mockImplementationOnce(() => undefined)
 
@@ -118,6 +111,15 @@ describe('getCourseInfo', () => {
 
     expect(res.send).toHaveBeenCalledWith(404)
   })
+
+  test('logs if courseCode doesnt exist', async () => {
+    getDoc.mockResolvedValueOnce(undefined)
+
+    await reqHandler(getCourseInfoByCourseCode, { params: { courseCode: '11111' } })
+
+    expect(log.info).toHaveBeenNthCalledWith(1, 'No entry found for courseCode: 11111')
+  })
+
   test('Returns error when database error occurs', async () => {
     const expectedError = new Error('Error from DB')
     getDoc.mockRejectedValueOnce(expectedError)
@@ -127,23 +129,24 @@ describe('getCourseInfo', () => {
     expect(log.error).toHaveBeenCalledWith('Failed fetching courseInfo', { err: expectedError })
     expect(returnValue).toEqual(expectedError)
   })
+
   test('logs sufficiently in happy case', async () => {
     await reqHandler(getCourseInfoByCourseCode, { params: { courseCode: mockDoc.courseCode } })
 
-    expect(log.info).toHaveBeenNthCalledWith(
-      1,
-      'Successfully fetched CourseInfo for courseCode: ',
-      'SF1624',
-      'Data: ',
-      mockDoc
-    )
+    expect(log.info).toHaveBeenNthCalledWith(1, 'Successfully fetched CourseInfo for courseCode: ', 'SF1624')
   })
-  test('log for when coursecode isnt found', async () => {
-    getDoc.mockResolvedValueOnce(undefined)
 
-    await reqHandler(getCourseInfoByCourseCode, { params: { courseCode: '11111' } })
+  test('calls toClientFormat with result from getDoc', async () => {
+    await reqHandler(getCourseInfoByCourseCode, { params: { courseCode: mockDoc.courseCode } })
 
-    expect(log.info).toHaveBeenNthCalledWith(1, 'No entry found for courseCode: 11111')
+    expect(CourseInfoMapper.toClientFormat).toHaveBeenCalledWith(mockDoc)
+  })
+
+  test('returns CourseInfo Object when called', async () => {
+    CourseInfoMapper.toClientFormat.mockReturnValueOnce(mockClientResponseDoc)
+    const { res } = await reqHandler(getCourseInfoByCourseCode, { params: { courseCode: mockDoc.courseCode } })
+
+    expect(res.send).toHaveBeenCalledWith(200, mockClientResponseDoc)
   })
 })
 
@@ -311,7 +314,6 @@ const newFieldsError = new Error('Failed updating entry: ', newFields.courseCode
 describe('patchCourseInfoByCourseCode', () => {
   beforeEach(() => {
     getDoc.mockResolvedValue(mockDoc)
-    getExistingDocOrNewOne.mockResolvedValue(mockDoc)
     CourseInfoMapper.toDBFormat.mockReturnValue(updatedFields)
     updateDoc.mockResolvedValue({ acknowledged: true })
   })

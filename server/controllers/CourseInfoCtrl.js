@@ -1,5 +1,5 @@
 const log = require('@kth/log')
-const { getExistingDocOrNewOne, getDoc, createDoc, updateDoc } = require('../lib/DBWrapper')
+const { getDoc, createDoc, updateDoc } = require('../lib/DBWrapper')
 const { toDBFormat, toClientFormat } = require('../util/CourseInfoMapper')
 
 const getCourseInfoByCourseCode = async (req, res) => {
@@ -9,14 +9,15 @@ const getCourseInfoByCourseCode = async (req, res) => {
   try {
     let doc = {}
     doc = await getDoc(courseCode)
-    if (doc) {
-      log.info('Successfully fetched CourseInfo for courseCode: ', doc.courseCode, 'Data: ', doc)
-      const clientResponse = toClientFormat(doc)
-      return res.send(201, clientResponse)
-    } else {
+
+    if (!doc) {
       log.info(`No entry found for courseCode: ${courseCode}`)
       return res.send(404)
     }
+
+    log.info('Successfully fetched CourseInfo for courseCode: ', doc.courseCode)
+    const clientResponse = toClientFormat(doc)
+    return res.send(200, clientResponse)
   } catch (err) {
     log.error('Failed fetching courseInfo', { err })
     return err
