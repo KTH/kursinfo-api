@@ -162,8 +162,7 @@ apiRoute.register(paths.api.postCourseWebLink, CourseWebLink.postCourseWebLink)
 // patchCourseInfo
 apiRoute.register(paths.api.patchCourseInfo, CourseInfo.patchCourseInfo)
 
-// putCourseInfo
-apiRoute.register(paths.api.putCourseInfoByCourseCode, CourseInfo.putCourseInfoByCourseCode)
+// getCourseInfo
 apiRoute.register(paths.api.getCourseInfoByCourseCode, CourseInfo.getCourseInfoByCourseCode)
 
 // postCourseInfo

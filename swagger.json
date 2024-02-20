@@ -238,46 +238,6 @@
           }
         ]
       },
-      "put": {
-        "operationId": "putCourseInfoByCourseCode",
-        "summary": "Saves an object in the database",
-        "description": "Saves changes to an object in the database",
-        "parameters": [
-          {
-            "name": "courseCode",
-            "in": "path",
-            "description": "course code",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "courseInfo",
-            "in": "body",
-            "description": "courseInfo to save",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/PartialCourseInfo"
-            }
-          }
-        ],
-        "tags": ["v1"],
-        "responses": {
-          "200": {
-            "description": "A successful save"
-          },
-          "default": {
-            "description": "Unexpected error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        },
-        "security": [
-          {
-            "api_key": ["write"]
-          }
-        ]
-      },
       "patch": {
         "operationId": "patchCourseInfo",
         "summary": "Updates an object in the database",
