@@ -239,7 +239,7 @@
         ]
       },
       "patch": {
-        "operationId": "patchCourseInfo",
+        "operationId": "patchCourseInfoByCourseCode",
         "summary": "Updates an object in the database",
         "description": "Updates an object in the database",
         "parameters": [

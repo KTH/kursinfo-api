@@ -44,7 +44,7 @@ const postCourseInfo = async (req, res) => {
   }
 }
 
-const patchCourseInfo = async (req, res) => {
+const patchCourseInfoByCourseCode = async (req, res) => {
   if (!req.body) return res.send(400, 'Missing request body')
 
   const courseCode = req.body.courseCode
@@ -77,5 +77,5 @@ const patchCourseInfo = async (req, res) => {
 module.exports = {
   getCourseInfoByCourseCode,
   postCourseInfo,
-  patchCourseInfo,
+  patchCourseInfoByCourseCode,
 }

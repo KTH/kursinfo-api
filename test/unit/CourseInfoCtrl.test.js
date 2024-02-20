@@ -2,7 +2,7 @@ const { describe, expect, test } = require('@jest/globals')
 const {
   getCourseInfoByCourseCode,
   postCourseInfo,
-  patchCourseInfo,
+  patchCourseInfoByCourseCode,
 } = require('../../server/controllers/CourseInfoCtrl')
 
 jest.mock('@kth/log', () => {
@@ -286,7 +286,7 @@ describe('postCourseInfo', () => {
 
 //****************************************************************************************/
 //                                                                                       *
-//                      patchCourseInfo                                                  *
+//                      patchCourseInfoByCourseCode                                      *
 //                                                                                       *
 //****************************************************************************************/
 
@@ -308,7 +308,7 @@ const newFields = {
 
 const newFieldsError = new Error('Failed updating entry: ', newFields.courseCode)
 
-describe('patchCourseInfo', () => {
+describe('patchCourseInfoByCourseCode', () => {
   beforeEach(() => {
     getDoc.mockResolvedValue(mockDoc)
     getExistingDocOrNewOne.mockResolvedValue(mockDoc)
@@ -320,13 +320,13 @@ describe('patchCourseInfo', () => {
   })
 
   test('returns status code 400 if no body present in request and returns result of res.send', async () => {
-    const { res, returnValue } = await reqHandler(patchCourseInfo, {})
+    const { res, returnValue } = await reqHandler(patchCourseInfoByCourseCode, {})
     expect(res.send).toHaveBeenCalledWith(400, 'Missing request body')
     expect(returnValue).toStrictEqual('sentSuccessful')
   })
 
   test('returns status code 400 if courseCode not present in request and returns result of res.send', async () => {
-    const { res, returnValue } = await reqHandler(patchCourseInfo, { body: {} })
+    const { res, returnValue } = await reqHandler(patchCourseInfoByCourseCode, { body: {} })
     expect(res.send).toHaveBeenCalledWith(400, "Missing parameter 'courseCode'")
     expect(returnValue).toStrictEqual('sentSuccessful')
   })
@@ -334,7 +334,7 @@ describe('patchCourseInfo', () => {
   test.each(['someCourseCode', 'someOtherCourseCode'])(
     'calls DBWrapper.getDoc with courseCode: %p',
     async courseCode => {
-      await reqHandler(patchCourseInfo, { body: { courseCode } })
+      await reqHandler(patchCourseInfoByCourseCode, { body: { courseCode } })
 
       expect(getDoc).toHaveBeenCalledWith(courseCode)
     }
@@ -345,7 +345,7 @@ describe('patchCourseInfo', () => {
     async courseCode => {
       getDoc.mockResolvedValueOnce(undefined)
 
-      const { res, returnValue } = await reqHandler(patchCourseInfo, { body: { courseCode } })
+      const { res, returnValue } = await reqHandler(patchCourseInfoByCourseCode, { body: { courseCode } })
 
       expect(res.send).toHaveBeenCalledWith(
         404,
@@ -362,20 +362,20 @@ describe('patchCourseInfo', () => {
       const error = new Error(errorMessage)
 
       getDoc.mockRejectedValueOnce(error)
-      const { returnValue } = await reqHandler(patchCourseInfo, { body: { courseCode } })
+      const { returnValue } = await reqHandler(patchCourseInfoByCourseCode, { body: { courseCode } })
       expect(log.error).toHaveBeenCalledWith({ err: error, courseCode }, 'Error when contacting database')
       expect(returnValue).toStrictEqual(error)
     }
   )
 
   test('calls courseInfoMapper.toDBFormat with request body', async () => {
-    await reqHandler(patchCourseInfo, { body: mockDoc })
+    await reqHandler(patchCourseInfoByCourseCode, { body: mockDoc })
 
     expect(CourseInfoMapper.toDBFormat).toHaveBeenCalledWith(mockDoc)
   })
 
   test('calls updateDoc with req.body content in dbFormat', async () => {
-    await reqHandler(patchCourseInfo, { body: newFields })
+    await reqHandler(patchCourseInfoByCourseCode, { body: newFields })
     expect(updateDoc).toHaveBeenCalledWith(newFields.courseCode, updatedFields)
   })
 
@@ -383,7 +383,7 @@ describe('patchCourseInfo', () => {
     'breaks execution if updateDoc rejects or if update.response.acknowledged is falsy',
     async promise => {
       updateDoc.mockImplementationOnce(promise)
-      const { res } = await reqHandler(patchCourseInfo, { body: newFields })
+      const { res } = await reqHandler(patchCourseInfoByCourseCode, { body: newFields })
       expect(getDoc).toHaveBeenCalledTimes(1)
       expect(CourseInfoMapper.toClientFormat).toHaveBeenCalledTimes(0)
       expect(res.send).toHaveBeenCalledTimes(0)
@@ -392,7 +392,7 @@ describe('patchCourseInfo', () => {
 
   test('breaks execution if update.response.acknowledged is falsy', async () => {
     updateDoc.mockResolvedValueOnce({ acknowledged: false })
-    const { res } = await reqHandler(patchCourseInfo, { body: newFields })
+    const { res } = await reqHandler(patchCourseInfoByCourseCode, { body: newFields })
     expect(getDoc).toHaveBeenCalledTimes(1)
     expect(CourseInfoMapper.toClientFormat).toHaveBeenCalledTimes(0)
     expect(res.send).toHaveBeenCalledTimes(0)
@@ -402,7 +402,7 @@ describe('patchCourseInfo', () => {
     'Error is logged and returned in rejected case',
     async mockPromise => {
       updateDoc.mockImplementationOnce(mockPromise)
-      const { returnValue } = await reqHandler(patchCourseInfo, { body: newFields })
+      const { returnValue } = await reqHandler(patchCourseInfoByCourseCode, { body: newFields })
       expect(returnValue).toEqual(newFieldsError)
       expect(log.error).toHaveBeenCalledWith(
         {
@@ -415,7 +415,7 @@ describe('patchCourseInfo', () => {
   )
 
   test('runs getDoc twice to refetch updated entry', async () => {
-    await reqHandler(patchCourseInfo, { body: newFields })
+    await reqHandler(patchCourseInfoByCourseCode, { body: newFields })
     expect(getDoc).toHaveBeenCalledTimes(2)
     expect(getDoc).toHaveBeenNthCalledWith(1, 'SF1624')
     expect(getDoc).toHaveBeenLastCalledWith('SF1624')
@@ -425,13 +425,13 @@ describe('patchCourseInfo', () => {
     getDoc.mockReturnValueOnce(mockDoc)
     getDoc.mockReturnValueOnce(updatedFields)
 
-    await reqHandler(patchCourseInfo, { body: newFields })
+    await reqHandler(patchCourseInfoByCourseCode, { body: newFields })
     expect(CourseInfoMapper.toClientFormat).toBeCalledWith(updatedFields)
   })
 
   test('responds with 201 and updated doc in clientFormat', async () => {
     CourseInfoMapper.toClientFormat.mockReturnValue(updatedFields)
-    const { res } = await reqHandler(patchCourseInfo, { body: newFields })
+    const { res } = await reqHandler(patchCourseInfoByCourseCode, { body: newFields })
     expect(res.send).toBeCalledWith(201, updatedFields)
   })
 })
