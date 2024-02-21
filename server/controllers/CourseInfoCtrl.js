@@ -46,10 +46,12 @@ const postCourseInfo = async (req, res) => {
 }
 
 const patchCourseInfoByCourseCode = async (req, res) => {
+  const courseCode = req.params?.courseCode
+  if (!courseCode) return res.status(400).send("Missing path parameter 'courseCode'")
+
   if (!req.body) return res.status(400).send('Missing request body')
 
-  const courseCode = req.body.courseCode
-  if (!courseCode) return res.status(400).send("Missing parameter 'courseCode'")
+  if (Object.keys(req.body).length === 0) return res.status(400).send('Empty request body')
 
   try {
     const originalDoc = await getDoc(courseCode)
@@ -57,7 +59,7 @@ const patchCourseInfoByCourseCode = async (req, res) => {
       return res.status(404).send(`CourseInfo for courseCode '${courseCode}' does not exist. Use POST instead.`)
     }
 
-    const updatedFields = toDBFormat(req.body)
+    const updatedFields = toDBFormat(req.body, true)
 
     const updateResponse = await updateDoc(courseCode, updatedFields)
 

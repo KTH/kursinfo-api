@@ -93,7 +93,26 @@ const clientFormatEmptyFieldsDoc = {
   imageInfo: 'someImageInfo',
 }
 
-describe.only('toDBFormat', () => {
+const correctClientFormatPatch = {
+  sellingText: { en: 'fooEN', sv: 'fooSV' },
+  courseDisposition: { en: 'courseDisposition text en', sv: 'courseDisposition text sv' },
+  supplementaryInfo: { en: 'some Supplementary info', sv: 'övrig information' },
+  sellingTextAuthor: 'Ada Lovelace',
+  imageInfo: 'someImageInfo',
+}
+
+const expectedDBFormatPatch = {
+  sellingText_en: 'fooEN',
+  sellingText_sv: 'fooSV',
+  courseDisposition_en: 'courseDisposition text en',
+  courseDisposition_sv: 'courseDisposition text sv',
+  supplementaryInfo_en: 'some Supplementary info',
+  supplementaryInfo_sv: 'övrig information',
+  sellingTextAuthor: 'Ada Lovelace',
+  imageInfo: 'someImageInfo',
+}
+
+describe('toDBFormat', () => {
   test('returns correct format with appropriate input', () => {
     const formattedDoc = toDBFormat(clientFormatDoc)
 
@@ -111,9 +130,17 @@ describe.only('toDBFormat', () => {
     const formattedDoc = toDBFormat(clientFormatNullFieldsDoc)
     expect(formattedDoc).toStrictEqual(dbFormatEmptyFields)
   })
+
+  test.each([correctClientFormatPatch, { ...correctClientFormatPatch, courseCode: 'someCourseCode' }])(
+    `if boolean 'isPatch' is true, removes courseCode if it exists`,
+    patchObject => {
+      const formattedDoc = toDBFormat(patchObject, true)
+      expect(formattedDoc).toStrictEqual(expectedDBFormatPatch)
+    }
+  )
 })
 
-describe.only('toClientFormat', () => {
+describe('toClientFormat', () => {
   test('returns correct format with appropriate input', () => {
     const formattedDoc = toClientFormat(dbFormatDoc)
     expect(formattedDoc).toStrictEqual(clientFormatDoc)

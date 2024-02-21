@@ -1,4 +1,4 @@
-const toDBFormat = httpFormat => {
+const toDBFormat = (httpFormat, isPatch = false) => {
   const {
     sellingText: sellingTexts,
     sellingTextAuthor,
@@ -9,7 +9,7 @@ const toDBFormat = httpFormat => {
   } = httpFormat
 
   const newFile = {
-    courseCode: courseCode.toUpperCase(),
+    courseCode: courseCode ? courseCode.toUpperCase() : undefined,
     imageInfo: imageInfo ?? undefined,
     sellingText_en: sellingTexts?.en ?? undefined,
     sellingText_sv: sellingTexts?.sv ?? undefined,
@@ -18,6 +18,10 @@ const toDBFormat = httpFormat => {
     supplementaryInfo_sv: supplementaryInfos?.sv ?? undefined,
     courseDisposition_en: courseDispositions?.en ?? undefined,
     courseDisposition_sv: courseDispositions?.sv ?? undefined,
+  }
+
+  if (isPatch) {
+    delete newFile.courseCode
   }
 
   return newFile
