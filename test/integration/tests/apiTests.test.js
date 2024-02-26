@@ -1,9 +1,8 @@
-// const API_KEY = 14321
-// const BASE_URL = 'http://localhost:3001/api/kursinfo'
-
 const { INTEGRATION_TEST_BASEURL: BASE_URL, API_KEY } = process.env
 
+console.log('--------------------------------------------------------------------')
 console.log(`Starting test run with BASE_URL: ${BASE_URL} and API_KEY: ${API_KEY}`)
+console.log('--------------------------------------------------------------------')
 
 const headers = {
   api_key: API_KEY,
@@ -45,9 +44,9 @@ const patchCourseInfo = async (courseCode, patchObject) => {
     body: JSON.stringify(patchObject),
   })
 
-  const { status } = result
-
   const body = await result.json()
+
+  const { status } = result
 
   return { status, body }
 }
@@ -90,7 +89,11 @@ const expected = {
 
 const expectedPatch = {
   ...expected,
-  imageInfo: 'Foo',
+  imageInfo: 'someOtherImageInfo',
+  supplementaryInfo: {
+    en: 'Supplementary info in english',
+    sv: 'Övrig information på svenska',
+  },
 }
 
 describe('kursinfo-api', () => {
@@ -134,7 +137,13 @@ describe('kursinfo-api', () => {
   })
 
   test('patchCourseInfo alters entry in database and returns 201 and altered object', async () => {
-    const { status, body } = await patchCourseInfo(courseCode, { imageInfo: 'Foo' })
+    const { status, body } = await patchCourseInfo(courseCode, {
+      imageInfo: 'someOtherImageInfo',
+      supplementaryInfo: {
+        en: 'Supplementary info in english',
+        sv: 'Övrig information på svenska',
+      },
+    })
 
     expect(status).toStrictEqual(201)
     expect(body).toEqual(expectedPatch)
