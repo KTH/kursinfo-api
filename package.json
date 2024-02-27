@@ -14,7 +14,6 @@
     "test-ci": "is-ci \"test\" \"test:watch\"",
     "test": "NODE_ENV=test jest test/unit/*.js",
     "test:watch": "NODE_ENV=test jest test/unit/*.js --watch",
-    "test:docker:unit": "ID=$(docker build -q .) && LOCAL_IMAGE_ID=$ID docker-compose -f docker-compose-unit-tests.yml up --build --abort-on-container-exit --always-recreate-deps --force-recreate",
     "test:docker:integration": "docker-compose -f docker-compose-integration-tests.yml up --abort-on-container-exit --build --remove-orphans",
     "test:integration": "INTEGRATION_TEST_BASEURL=http://localhost:3001/api/kursinfo API_KEY=14321 npx jest --config ./test/integration/integration-jest.config.js",
     "start": "NODE_ENV=production node app.js",
