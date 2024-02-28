@@ -8,6 +8,7 @@ module.exports = {
 
   ImageInfo: require('./imageCtrl'),
 
-  CourseWebLink: require('./courseWebLink')
+  CourseWebLink: require('./courseWebLink'),
 
+  CourseInfo: require('./CourseInfoCtrl'),
 }

@@ -2,26 +2,33 @@ version: '3.7'
 
 services:
   mongodb:
-    image: mongo:4.4.2
+    container_name: mongodbdb
+    image: mongo:4.0.0
+    # ports:
+    #   - 27017:27017
 
   api:
     image: $LOCAL_IMAGE_ID
+    container_name: api
     environment:
       SERVICE_PUBLISH: '/api/kursinfo'
       SERVER_PORT: 3000
       MONGODB_URI: mongodb://mongodb/kursinfo
       API_KEYS_0: '?name=test&apiKey=1234&scope=read'
+      API_KEYS_1: '?name=test&apiKey=14321&scope=read&scope=write'
       WAIT_HOSTS: 'mongodbdb:27017'
       WAIT_HOSTS_TIMEOUT: 30
     depends_on:
       - mongodb
+    # ports:
+    #   - 3000:3000
 
   integration:
     build: ./test/integration
+    container_name: integration
     environment:
       INTEGRATION_TEST_BASEURL: 'http://api:3000/api/kursinfo'
-      INTEGRATION_TEST_SUCCESS_DELAY: '${SUCCESS_DELAY:-0}'
-      INTEGRATION_TEST_FAILURE_DELAY: '${FAILURE_DELAY:-0}'
+      API_KEY: '14321'
       WAIT_HOSTS: 'api:3000'
       WAIT_HOSTS_TIMEOUT: 30
     depends_on:

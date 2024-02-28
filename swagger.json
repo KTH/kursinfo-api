@@ -68,6 +68,7 @@
     },
     "/v1/sellingInfo/{courseCode}/": {
       "get": {
+        "deprecated": true,
         "operationId": "getSellingTextByCourseCode",
         "summary": "Get selling info for a specific course saved in 2 languages, author and image name",
         "description": "Get selling info for a specific course saved in 2 languages, author and image name",
@@ -102,6 +103,7 @@
         ]
       },
       "post": {
+        "deprecated": true,
         "operationId": "postSellingTextByCourseCode",
         "summary": "Saves an object in the database",
         "description": "Saves changes to an object in the database",
@@ -145,6 +147,126 @@
         "responses": {
           "200": {
             "description": "A successful save"
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": ["write"]
+          }
+        ]
+      }
+    },
+    "/v1/courseInfo/": {
+      "post": {
+        "operationId": "postCourseInfo",
+        "summary": "Creates an object in the database",
+        "description": "Creates an object in the database",
+        "parameters": [
+          {
+            "name": "courseInfo",
+            "in": "body",
+            "description": "courseInfo to create",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CourseInfo"
+            }
+          }
+        ],
+        "tags": ["v1"],
+        "responses": {
+          "201": {
+            "description": "A successful creation",
+            "schema": {
+              "$ref": "#/definitions/CourseInfo"
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": ["write"]
+          }
+        ]
+      }
+    },
+    "/v1/courseInfo/{courseCode}/": {
+      "get": {
+        "operationId": "getCourseInfoByCourseCode",
+        "summary": "Get course info for a specific course",
+        "description": "Get course info for a specific course",
+        "parameters": [
+          {
+            "name": "courseCode",
+            "in": "path",
+            "description": "course code",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": ["v1"],
+        "responses": {
+          "200": {
+            "description": "The requested data",
+            "schema": {
+              "$ref": "#/definitions/CourseInfo"
+            }
+          },
+          "404": {
+            "description": "No entry found for that courseCode"
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": ["read"]
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "patchCourseInfoByCourseCode",
+        "summary": "Updates an object in the database",
+        "description": "Updates an object in the database",
+        "parameters": [
+          {
+            "name": "courseCode",
+            "in": "path",
+            "description": "course code",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "courseInfo",
+            "in": "body",
+            "description": "courseInfo to save",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PartialCourseInfo"
+            }
+          }
+        ],
+        "tags": ["v1"],
+        "responses": {
+          "200": {
+            "description": "A successful update",
+            "schema": {
+              "$ref": "#/definitions/CourseInfo"
+            }
           },
           "default": {
             "description": "Unexpected error",
@@ -204,6 +326,7 @@
     },
     "/v1/courseWebLink/{courseCode}/": {
       "post": {
+        "deprecated": true,
         "operationId": "postCourseWebLink",
         "summary": "Saves a boolean flag isCourseWebLink in the database",
         "description": "Saves a boolean flag isCourseWebLink in the database: true, false",
@@ -288,6 +411,76 @@
         "sellingText_se": {
           "type": "string",
           "description": "Swedish course introduction, html text"
+        },
+        "imageInfo": {
+          "type": "string",
+          "description": "The imageInfo to save, t.e., Picture_by_own_choice_SF1624.jpg"
+        },
+        "sellingTextAuthor": {
+          "type": "string",
+          "description": "The author's kthId to save"
+        }
+      }
+    },
+    "CourseInfo": {
+      "type": "object",
+      "required": ["courseCode"],
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "courseCode": {
+              "type": "string",
+              "description": "Unique course identifier representing course code, t.e, SF1624"
+            }
+          }
+        },
+        {
+          "$ref": "#/definitions/PartialCourseInfo"
+        }
+      ]
+    },
+    "PartialCourseInfo": {
+      "type": "object",
+      "properties": {
+        "sellingText": {
+          "type": "object",
+          "properties": {
+            "en": {
+              "type": "string",
+              "description": "Selling text in English."
+            },
+            "sv": {
+              "type": "string",
+              "description": "Selling text in Swedish."
+            }
+          }
+        },
+        "courseDisposition": {
+          "type": "object",
+          "properties": {
+            "en": {
+              "type": "string",
+              "description": "The courses disposition in English."
+            },
+            "sv": {
+              "type": "string",
+              "description": "The courses disposition in Swedish."
+            }
+          }
+        },
+        "supplementaryInfo": {
+          "type": "object",
+          "properties": {
+            "en": {
+              "type": "string",
+              "description": "Supplementary info regarding the course in English."
+            },
+            "sv": {
+              "type": "string",
+              "description": "Supplementary info regarding the course in Swedish."
+            }
+          }
         },
         "imageInfo": {
           "type": "string",
