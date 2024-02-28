@@ -29,7 +29,6 @@ async function getData(req, res) {
         sv: doc.sellingText_sv,
       },
       imageInfo: doc.imageInfo,
-      isCourseWebLink: doc.isCourseWebLink,
       sellingTextAuthor: doc.sellingTextAuthor,
     })
     // res.json(doc)
