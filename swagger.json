@@ -323,49 +323,6 @@
           }
         ]
       }
-    },
-    "/v1/courseWebLink/{courseCode}/": {
-      "post": {
-        "deprecated": true,
-        "operationId": "postCourseWebLink",
-        "summary": "Saves a boolean flag isCourseWebLink in the database",
-        "description": "Saves a boolean flag isCourseWebLink in the database: true, false",
-        "parameters": [
-          {
-            "name": "courseCode",
-            "in": "path",
-            "description": "courseCode of the sellingText to save",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "isCourseWebLink",
-            "in": "body",
-            "description": "The isCourseWebLink to save",
-            "required": false,
-            "schema": {
-              "$ref": "#/definitions/CourseModel"
-            }
-          }
-        ],
-        "tags": ["v1"],
-        "responses": {
-          "200": {
-            "description": "A successful save"
-          },
-          "default": {
-            "description": "Unexpected error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        },
-        "security": [
-          {
-            "api_key": ["write"]
-          }
-        ]
-      }
     }
   },
   "securityDefinitions": {
