@@ -33,6 +33,7 @@ module.exports = mongoose.Schema(
       default: '',
     },
     isCourseWebLink: {
+      // This field is no longer in use as of KUI-1245. It is retained in this schema file, because it is not removed from the DB.
       type: Boolean,
       required: false,
       default: false,
