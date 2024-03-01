@@ -4,10 +4,10 @@
  */
 
 module.exports = {
-  gitBranch: 'NOT SET BY JENKINS',
-  gitCommit: 'NOT SET BY JENKINS',
+  gitBranch: 'NOT SET BY PIPELINE',
+  gitCommit: 'NOT SET BY PIPELINE',
   jenkinsBuild: process.env.BUILD_ID,
-  jenkinsBuildDate: 'NOT SET BY JENKINS',
-  dockerName: 'NOT SET BY JENKINS',
-  dockerVersion: process.env.BUILD_ID
+  jenkinsBuildDate: 'NOT SET BY PIPELINE',
+  dockerName: 'NOT SET BY PIPELINE',
+  dockerVersion: process.env.BUILD_ID,
 }

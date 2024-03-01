@@ -1,6 +1,6 @@
 # Welcome to kursinfo-api 👋
 
-![Version](https://img.shields.io/badge/version-0.8.0-blue.svg?cacheSeconds=2592000)
+![Version](https://img.shields.io/badge/version-2.0.0-blue.svg?cacheSeconds=2592000)
 ![Prerequisite](https://img.shields.io/badge/node-18-blue.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#)
 
@@ -8,10 +8,9 @@
 
 The course information project (KIP) is an initiative at KTH that was launched in 2018 to improve the quality and availability of information about KTH:s courses. The background to the project is, among other things, that it was difficult for the student to find information about the courses and even more difficult to compare information about several courses. The reason for the problems is scattered course information in several places and that there is no uniformity or assigned places for the course information. The project takes measures to consolidate course information into two locations and to present the information in a manner that is uniform for KTH. The student should find the right information about the course, depending on their needs. The result of the project is a public course site where the correct course information is collected and presented uniformly. Also, a tool is developed for teachers to enter and publish course information. Eventually, this will lead to the student making better decisions based on their needs, and it will also reduce the burden on teachers and administration regarding questions and support for the student.
 
-Kursinfo-api is a microservice to save course's short description and image to database. It accepts data from kursinfo admin pages "Administrate About course information
-"([kursinfo-admin-web](https://github.com/KTH/kursinfo-admin-web)) and serves this data to the public view of:
+Kursinfo-api is a microservice to save information on course level, such as short description and image to a database. It accepts data from the kursinfo admin pages "Administrate About course information" ([kursinfo-admin-web](https://github.com/KTH/kursinfo-admin-web)) and serves this data to the public view of:
 
-- "Before choosing course"([kursinfo-web](https://github.com/KTH/kursinfo-web))
+- "Before choosing course" ([kursinfo-web](https://github.com/KTH/kursinfo-web))
 - To show course memo information ([kurs-pm-web](https://github.com/KTH/kurs-pm-web))
 - To show in preview mode in course memo data admin web ([kurs-pm-data-admin-web](https://github.com/KTH/kurs-pm-data-admin-web))
 
@@ -41,23 +40,10 @@ Only admin pages may change API data while public pages can only read. Therefore
 ## Prerequisites
 
 - Node.js 18
-- Ansible Vault
 
 ### Secrets for Development
 
 Secrets during local development are ALWAYS stored in a `.env`-file in the root of your project. This file should be in .gitignore. This file should be in .gitignore. MONGODB_URI is usually uses db in azure, but it also goes to use localhost mongo, it have a default value in `config/serverSettings.js`
-
-```
-MONGODB_URI=mongodb://kursinfo-api-stage-mongodb-kthse:[password, specified in Azure]==@kursinfo-api-stage-mongodb-kthse.documents.azure.com:[port, specified in Azure]/admin?ssl=true&authSource=admin
-API_KEYS_0=?name=kursinfo-web&apiKey=[generate a password for public pages]&scope=read
-API_KEYS_1=?name=kurs-pm-web&apiKey=[generate a password for public pages]&scope=read
-API_KEYS_2=?name=kursinfo-admin-web&apiKey=[generate a password for admin page]&scope=write&scope=read
-API_KEYS_3=?name=kurs-pm-data-admin-web&apiKey=[generate a password for admin page]&scope=write&scope=read
-APPINSIGHTS_INSTRUMENTATIONKEY=[Azure, Application insights, Instrumentation Key, can be found in Overview]
-USE_COSMOS_DB='true'
-LOGGING_ACCESS_LOG=debug
-SERVER_PORT=3001 [if you want to change port]
-```
 
 These settings are also available in an `env.in` file.
 
@@ -66,9 +52,9 @@ These settings are also available in an `env.in` file.
 1. Create database `admin` and advisible manually set Throughput: 400 (Shared)(Today it is 1000).
    Name of database will be used in a connection string.
 2. In this database create a collection `courses-data`.
-3. Change a connection string by adding name of database (`admin`) after port slush `[port]/` and as a search query after `?` as `authSorce=admin`:
+3. Change a connection string by adding name of database (`admin`) after port slash `[port]/` and as a search query after `?` as `authSource=admin`:
 
-`mongodb://kursinfo-api-stage-mongodb-kthse:[password]==@kursinfo-api-stage-mongodb-kthse.documents.azure.com:[port]`~~/?ssl=true&replicaSet=globaldb~~`/admin?ssl=true&replicaSet=globaldb&authSource=admin`
+`mongodb://kursinfo-api-stage-mongodb-kthse:[password]==@kursinfo-api-stage-mongodb-kthse.documents.azure.com:[port]/admin?ssl=true&replicaSet=globaldb&authSource=admin`
 
 More information can be found in Confluence: [Om kursen: Databas och API, connection string](https://confluence.sys.kth.se/confluence/x/a4_KC)
 
@@ -90,7 +76,7 @@ npm run start-dev
 
 ## In Production
 
-Secrets and docker-compose are located in cellus-registry.
+Secrets and docker-compose are located in Azure.
 
 ## Run tests
 
@@ -120,28 +106,11 @@ Copy `docker-compose.yml.in` to `docker-compose.yml` and make necessary changes,
 docker-compose up
 ```
 
-## Deploy in Stage
+## Deploy to REF
 
-The deployment process is described in [Build, release, deploy](https://confluence.sys.kth.se/confluence/x/aY3_Ag). Technical details, such as configuration, is described in [How to deploy your 🐳 application using Cellus-Registy](https://gita.sys.kth.se/Infosys/cellus-registry/blob/master/HOW-TO-DEPLOY.md) and [🔧 How To Configure Your Application For The Pipeline](https://gita.sys.kth.se/Infosys/cellus-registry/blob/master/HOW-TO-CONFIGURE.md).
+The deploy to REF is handled automatically after code is merged into master. The application secrets are picked from the azure keyvault for kursinfo-api-ref.
 
-### Edit secrets.env
-
-```sh
-ansible-vault edit secrets.env
-```
-
-Password find in gsv-key vault
-
-### Configure secrets.env
-
-```
-MONGODB_URI=mongodb://kursinfo-api-stage-mongodb-kthse:[password, specified in Azure]==@kursinfo-api-stage-mongodb-kthse.documents.azure.com:[port, specified in Azure]/admin?ssl=true&authSource=admin
-API_KEYS_0=?name=kursinfo-web&apiKey=[generate a password for public pages]&scope=read
-API_KEYS_1=?name=kurs-pm-web&apiKey=[generate a password for public pages]&scope=read
-API_KEYS_2=?name=kursinfo-admin-web&apiKey=[generate a password for admin page]&scope=write&scope=read
-API_KEYS_3=?name=kurs-pm-data-admin-web&apiKey=[generate a password for admin page]&scope=write&scope=read
-APPINSIGHTS_INSTRUMENTATIONKEY=[Azure, Application insights, Instrumentation Key, can be found in Overview]
-```
+The deployment process is described in [Release to production](https://confluence.sys.kth.se/confluence/x/xIjCCg).
 
 ## Author
 
