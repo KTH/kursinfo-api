@@ -18,7 +18,7 @@ const clientFormatDoc = {
   sellingText: { en: 'fooEN', sv: 'fooSV' },
   courseDisposition: { en: 'courseDisposition text en', sv: 'courseDisposition text sv' },
   supplementaryInfo: { en: 'supplmentaryInfo text en', sv: 'supplmentaryInfo text sv' },
-  sellingTextAuthor: 'Ada Lovelace',
+  lastChangedBy: 'Ada Lovelace',
   imageInfo: 'someImageInfo',
 }
 
@@ -27,7 +27,7 @@ const clientFormatExtraFieldsDoc = {
   sellingText: { en: 'fooEN', sv: 'fooSV' },
   courseDisposition: { en: 'courseDisposition text en', sv: 'courseDisposition text sv' },
   supplementaryInfo: { en: 'supplmentaryInfo text en', sv: 'supplmentaryInfo text sv' },
-  sellingTextAuthor: 'Ada Lovelace',
+  lastChangedBy: 'Ada Lovelace',
   imageInfo: 'someImageInfo',
   extraField: 'extra field info',
 }
@@ -37,7 +37,7 @@ const clientFormatNullFieldsDoc = {
   sellingText: { en: 'fooEN', sv: 'fooSV' },
   courseDisposition: { en: 'courseDisposition text en', sv: 'courseDisposition text sv' },
   supplementaryInfo: { en: null, sv: null },
-  sellingTextAuthor: 'Ada Lovelace',
+  lastChangedBy: 'Ada Lovelace',
   imageInfo: 'someImageInfo',
 }
 
@@ -45,7 +45,7 @@ const clientFormatMissingFieldsDoc = {
   courseCode: 'SF1624',
   sellingText: { en: 'fooEN', sv: 'fooSV' },
   courseDisposition: { en: 'courseDisposition text en', sv: 'courseDisposition text sv' },
-  sellingTextAuthor: 'Ada Lovelace',
+  lastChangedBy: 'Ada Lovelace',
   imageInfo: 'someImageInfo',
   extraField: 'extra field info',
 }
@@ -89,7 +89,7 @@ const clientFormatEmptyFieldsDoc = {
   sellingText: { en: 'fooEN', sv: 'fooSV' },
   courseDisposition: { en: 'courseDisposition text en', sv: 'courseDisposition text sv' },
   supplementaryInfo: { en: '', sv: '' },
-  sellingTextAuthor: 'Ada Lovelace',
+  lastChangedBy: 'Ada Lovelace',
   imageInfo: 'someImageInfo',
 }
 
@@ -97,7 +97,7 @@ const correctClientFormatPatch = {
   sellingText: { en: 'fooEN', sv: 'fooSV' },
   courseDisposition: { en: 'courseDisposition text en', sv: 'courseDisposition text sv' },
   supplementaryInfo: { en: 'some Supplementary info', sv: 'övrig information' },
-  sellingTextAuthor: 'Ada Lovelace',
+  lastChangedBy: 'Ada Lovelace',
   imageInfo: 'someImageInfo',
 }
 

@@ -83,7 +83,7 @@ const expected = {
     en: '',
     sv: '',
   },
-  sellingTextAuthor: '',
+  lastChangedBy: '',
   imageInfo: 'someImageInfo',
 }
 

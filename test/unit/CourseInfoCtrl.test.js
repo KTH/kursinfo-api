@@ -237,11 +237,11 @@ describe('postCourseInfo', () => {
       {
         courseCode: 'someCourseCode',
         someParam: 'someParam',
-        sellingTextAuthor: 'sellingTextAuthor',
+        lastChangedBy: 'lastChangedBy',
       },
       {
         courseCode: 'someOtherCourseCode',
-        sellingTextAuthor: 'sellingTextAuthor2',
+        lastChangedBy: 'lastChangedBy2',
       },
     ])('calls CourseInfoMapper.toDBFormat with request body', async body => {
       await reqHandler(postCourseInfo, { body })
@@ -249,40 +249,40 @@ describe('postCourseInfo', () => {
       expect(CourseInfoMapper.toDBFormat).toHaveBeenCalledWith(body)
     })
 
-    test.each([
-      { courseCode: 'someCourseCode' },
-      { courseCode: 'someCourseCode', sellingTextAuthor: 'someSellingTextAuthor' },
-    ])('calls DBwrapper.createDoc with result from courseInfoMapper.toDBFormat', async dbFormat => {
-      CourseInfoMapper.toDBFormat.mockReturnValueOnce(dbFormat)
+    test.each([{ courseCode: 'someCourseCode' }, { courseCode: 'someCourseCode', lastChangedBy: 'someLastChangedBy' }])(
+      'calls DBwrapper.createDoc with result from courseInfoMapper.toDBFormat',
+      async dbFormat => {
+        CourseInfoMapper.toDBFormat.mockReturnValueOnce(dbFormat)
 
-      await reqHandler(postCourseInfo, { body: { courseCode: 'someCourseCode' } })
+        await reqHandler(postCourseInfo, { body: { courseCode: 'someCourseCode' } })
 
-      expect(createDoc).toHaveBeenCalledWith(dbFormat)
-    })
+        expect(createDoc).toHaveBeenCalledWith(dbFormat)
+      }
+    )
 
-    test.each([
-      { courseCode: 'someCourseCode' },
-      { courseCode: 'someCourseCode', sellingTextAuthor: 'someSellingTextAuthor' },
-    ])('calls CourseInfoMapper.toClientFormat with result from courseInfoMapper.toDBFormat', async dbFormat => {
-      createDoc.mockResolvedValueOnce(true)
-      CourseInfoMapper.toDBFormat.mockReturnValueOnce(dbFormat)
-      await reqHandler(postCourseInfo, { body: { courseCode: 'someCourseCode' } })
-      expect(CourseInfoMapper.toClientFormat).toHaveBeenCalledWith(dbFormat)
-    })
+    test.each([{ courseCode: 'someCourseCode' }, { courseCode: 'someCourseCode', lastChangedBy: 'someLastChangedBy' }])(
+      'calls CourseInfoMapper.toClientFormat with result from courseInfoMapper.toDBFormat',
+      async dbFormat => {
+        createDoc.mockResolvedValueOnce(true)
+        CourseInfoMapper.toDBFormat.mockReturnValueOnce(dbFormat)
+        await reqHandler(postCourseInfo, { body: { courseCode: 'someCourseCode' } })
+        expect(CourseInfoMapper.toClientFormat).toHaveBeenCalledWith(dbFormat)
+      }
+    )
 
-    test.each([
-      { courseCode: 'someCourseCode' },
-      { courseCode: 'someCourseCode', sellingTextAuthor: 'someSellingTextAuthor' },
-    ])('calls res.status/send with 201 and result from courseInfoMapper.toClientFormat', async httpFormat => {
-      createDoc.mockResolvedValueOnce(true)
-      CourseInfoMapper.toClientFormat.mockReturnValueOnce(httpFormat)
+    test.each([{ courseCode: 'someCourseCode' }, { courseCode: 'someCourseCode', lastChangedBy: 'someLastChangedBy' }])(
+      'calls res.status/send with 201 and result from courseInfoMapper.toClientFormat',
+      async httpFormat => {
+        createDoc.mockResolvedValueOnce(true)
+        CourseInfoMapper.toClientFormat.mockReturnValueOnce(httpFormat)
 
-      const { res, returnValue } = await reqHandler(postCourseInfo, { body: { courseCode: 'someCourseCode' } })
+        const { res, returnValue } = await reqHandler(postCourseInfo, { body: { courseCode: 'someCourseCode' } })
 
-      expect(res.status).toHaveBeenCalledWith(201)
-      expect(res.send).toHaveBeenCalledWith(httpFormat)
-      expect(returnValue).toStrictEqual('sentSuccessful')
-    })
+        expect(res.status).toHaveBeenCalledWith(201)
+        expect(res.send).toHaveBeenCalledWith(httpFormat)
+        expect(returnValue).toStrictEqual('sentSuccessful')
+      }
+    )
 
     test.each(['somecourseCode', 'someOtherCourseCode'])(
       'if createDoc rejects with error, calls log.error and breaks execution',
