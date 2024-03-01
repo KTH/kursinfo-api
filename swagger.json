@@ -486,9 +486,9 @@
           "type": "string",
           "description": "The imageInfo to save, t.e., Picture_by_own_choice_SF1624.jpg"
         },
-        "sellingTextAuthor": {
+        "lastChangedBy": {
           "type": "string",
-          "description": "The author's kthId to save"
+          "description": "The kthId of the person sending the data"
         }
       }
     },

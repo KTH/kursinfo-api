@@ -1,7 +1,7 @@
 const toDBFormat = (httpFormat, isPatch = false) => {
   const {
     sellingText: sellingTexts,
-    sellingTextAuthor,
+    lastChangedBy,
     imageInfo,
     supplementaryInfo: supplementaryInfos,
     courseDisposition: courseDispositions,
@@ -13,7 +13,7 @@ const toDBFormat = (httpFormat, isPatch = false) => {
     imageInfo: imageInfo ?? undefined,
     sellingText_en: sellingTexts?.en ?? undefined,
     sellingText_sv: sellingTexts?.sv ?? undefined,
-    sellingTextAuthor: sellingTextAuthor ?? undefined,
+    sellingTextAuthor: lastChangedBy ?? undefined,
     supplementaryInfo_en: supplementaryInfos?.en ?? undefined,
     supplementaryInfo_sv: supplementaryInfos?.sv ?? undefined,
     courseDisposition_en: courseDispositions?.en ?? undefined,
@@ -42,7 +42,7 @@ const toClientFormat = dbFormat => {
       en: dbFormat.courseDisposition_en ?? '',
       sv: dbFormat.courseDisposition_sv ?? '',
     },
-    sellingTextAuthor: dbFormat.sellingTextAuthor ?? '',
+    lastChangedBy: dbFormat.sellingTextAuthor ?? '',
     imageInfo: dbFormat.imageInfo ?? '',
   }
   return formattedDoc
