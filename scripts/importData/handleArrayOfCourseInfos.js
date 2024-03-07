@@ -2,14 +2,6 @@ const log = require('@kth/log')
 const { updateOrCreate } = require('./updateOrCreate')
 
 const handleArrayOfCourseInfos = async courseInfos => {
-  // What does map do in this case?
-  // will
-  // Test against local first
-
-  // filter out empty texts first
-  // after: filter success/fail and write to file
-  // add error messages
-
   log.info(`------Starting to import ${courseInfos.length} courseInfos`)
 
   const results = []

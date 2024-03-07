@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   mongodb:
-    container_name: mongo-move
+    container_name: kursinfo-api-mongo
     image: mongo:4.0.0
     ports:
       - 27018:27017

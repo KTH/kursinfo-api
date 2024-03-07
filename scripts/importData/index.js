@@ -1,10 +1,10 @@
 const fs = require('fs')
 const csvParser = require('csv-parser')
+const log = require('@kth/log')
 const { filterEmptyCourseInfos } = require('./filterEmptyCourseInfos')
 const { handleArrayOfCourseInfos } = require('./handleArrayOfCourseInfos')
-const log = require('@kth/log')
 
-const setup = () => {
+const setupLogging = () => {
   let logConfiguration = {
     name: 'migrate-script',
     app: 'migrate-script',
@@ -15,24 +15,24 @@ const setup = () => {
     src: undefined,
   }
   log.init(logConfiguration)
-
-  require('./database').connect()
 }
 
-// const cleanFile = () => {
-//   const someFile = './2024-02-20-data.csv'
-//   const outputFile = './2024-02-20-data-clean.csv'
-//   fs.readFile(someFile, 'utf8', function (err, data) {
-//     if (err) {
-//       return log.info(err)
-//     }
-//     var result = data.replaceAll(/;+$/gm, '')
+const tryToGetPathToFileFromParams = () => {
+  if (process.argv.length === 2) {
+    log.error('Please specify the path to the file you want to import into the database!')
+    process.exit(1)
+  }
 
-//     fs.writeFile(outputFile, result, 'utf8', function (err) {
-//       if (err) return log.info(err)
-//     })
-//   })
-// }
+  const pathToFile = process.argv[2]
+
+  log.info(`Got '${pathToFile} as file to import.`)
+
+  return pathToFile
+}
+
+const setupDatabase = () => {
+  require('./database').connect()
+}
 
 const readCSV = async file => {
   return new Promise((resolve, reject) => {
@@ -65,23 +65,8 @@ const handleCSV = async file => {
   log.info(`Extracted ${rawCSV.length} courses over all`)
 
   const filteredList = filterEmptyCourseInfos(rawCSV)
-  // const filteredList = [
-  //   {
-  //     courseCode: 'SF1625',
-  //     supplementaryInfo_sv: 'supplementaryInfo_sv_1',
-  //     supplementaryInfo_en: 'supplementaryInfo_en_1',
-  //     courseDisposition_sv: 'courseDisposition_sv_1',
-  //     courseDisposition_en: 'courseDisposition_en_1',
-  //   },
-  // ]
 
   log.info(`Extracted ${filteredList.length} courses with non-empty texts`)
-
-  // const firstTen = filteredList.slice(0, 1)
-  // firstTen.forEach(({ courseCode }) => {
-  //   log.info(courseCode)
-  // })
-  // const result = await handleArrayOfCourseInfos(firstTen)
 
   const result = await handleArrayOfCourseInfos(filteredList)
 
@@ -89,6 +74,8 @@ const handleCSV = async file => {
   const failed = result.filter(({ success }) => !success)
 
   log.info('-------')
+  log.info(`Extracted ${rawCSV.length} courses over all`)
+  log.info(`Extracted ${filteredList.length} courses with non-empty texts`)
   log.info(`Handled ${result.length} courseInfos`)
   log.info(`${successful.length} successful`)
   log.info(`${failed.length} failed`)
@@ -100,5 +87,14 @@ const handleCSV = async file => {
   }
 }
 
-setup()
-handleCSV('./2024-02-29-data.csv')
+const run = () => {
+  setupLogging()
+
+  const pathToFile = tryToGetPathToFileFromParams()
+
+  setupDatabase()
+
+  handleCSV(pathToFile)
+}
+
+run()
