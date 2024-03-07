@@ -1,7 +1,10 @@
-const { handleArrayOfCourseInfos } = require('../../scripts/handleArrayOfCourseInfos')
+jest.mock('@kth/log')
+const log = require('@kth/log')
 
-jest.mock('../../scripts/updateOrCreate')
-const { updateOrCreate } = require('../../scripts/updateOrCreate')
+const { handleArrayOfCourseInfos } = require('../importData/handleArrayOfCourseInfos')
+
+jest.mock('../importData/updateOrCreate')
+const { updateOrCreate } = require('../importData/updateOrCreate')
 
 const courseInfos = [
   {

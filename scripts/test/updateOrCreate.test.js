@@ -1,4 +1,4 @@
-const { updateOrCreate } = require('../../scripts/updateOrCreate')
+const { updateOrCreate } = require('../importData/updateOrCreate')
 jest.mock('../../server/lib/DBWrapper')
 const { getDoc, updateDoc, createDoc } = require('../../server/lib/DBWrapper')
 

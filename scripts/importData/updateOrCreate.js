@@ -1,4 +1,4 @@
-const { updateDoc, createDoc, getDoc } = require('../server/lib/DBWrapper')
+const { updateDoc, createDoc, getDoc } = require('../../server/lib/DBWrapper')
 
 const updateOrCreate = async courseInfo => {
   const courseCode = courseInfo.courseCode.toUpperCase()

@@ -1,4 +1,4 @@
-const { filterEmptyCourseInfos } = require('../../scripts/filterEmptyCourseInfos')
+const { filterEmptyCourseInfos } = require('../importData/filterEmptyCourseInfos')
 
 const filteredCourseInfos = [
   {
