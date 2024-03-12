@@ -1,66 +1,21 @@
-const fs = require('fs')
-const csvParser = require('csv-parser')
 const log = require('@kth/log')
 const { filterEmptyCourseInfos } = require('./filterEmptyCourseInfos')
 const { handleArrayOfCourseInfos } = require('./handleArrayOfCourseInfos')
+const { readCSV, setupLogging, setupDatabase, tryToGetPathToFileFromParams } = require('./utils')
 
-const setupLogging = () => {
-  let logConfiguration = {
-    name: 'migrate-script',
-    app: 'migrate-script',
-    env: 'development',
-    level: 'debug',
-    console: undefined,
-    stdout: undefined,
-    src: undefined,
-  }
-  log.init(logConfiguration)
-}
-
-const tryToGetPathToFileFromParams = () => {
-  if (process.argv.length === 2) {
-    log.error('Please specify the path to the file you want to import into the database!')
-    process.exit(1)
-  }
-
-  const pathToFile = process.argv[2]
-
-  log.info(`Got '${pathToFile} as file to import.`)
-
-  return pathToFile
-}
-
-const setupDatabase = () => {
-  require('./database').connect()
-}
-
-const readCSV = async file => {
-  return new Promise((resolve, reject) => {
-    const result = []
-    fs.createReadStream(file)
-      .pipe(
-        csvParser({
-          separator: ';',
-          headers: [
-            'courseCode',
-            'courseDisposition_sv',
-            'courseDisposition_en',
-            'supplementaryInfo_sv',
-            'supplementaryInfo_en',
-          ],
-        })
-      )
-      .on('data', data => {
-        result.push(data)
-      })
-      .on('end', () => {
-        resolve(result)
-      })
-  })
+const csvConfig = {
+  separator: ';',
+  headers: [
+    'courseCode',
+    'courseDisposition_sv',
+    'courseDisposition_en',
+    'supplementaryInfo_sv',
+    'supplementaryInfo_en',
+  ],
 }
 
 const handleCSV = async file => {
-  const rawCSV = await readCSV(file)
+  const rawCSV = await readCSV(file, csvConfig)
 
   log.info(`Extracted ${rawCSV.length} courses over all`)
 

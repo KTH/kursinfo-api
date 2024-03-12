@@ -1,4 +1,4 @@
-const { filterEmptyCourseInfos } = require('../importData/filterEmptyCourseInfos')
+const { filterEmptyCourseInfos, filterEmptySupplementaryInfos } = require('../importData/filterEmptyCourseInfos')
 
 const filteredCourseInfos = [
   {
@@ -38,6 +38,30 @@ const filteredCourseInfos = [
   },
 ]
 
+const filteredSupplementaryInfos = [
+  {
+    courseCode: 'sf1610',
+    supplementaryInfo_sv: 'supplementaryInfo_sv_1',
+    supplementaryInfo_en: 'supplementaryInfo_en_1',
+    courseDisposition_sv: 'courseDisposition_sv_1',
+    courseDisposition_en: 'courseDisposition_en_1',
+  },
+  {
+    courseCode: 'cs2001',
+    supplementaryInfo_sv: 'supplementaryInfo_sv_2',
+    supplementaryInfo_en: '',
+    courseDisposition_sv: '',
+    courseDisposition_en: '',
+  },
+  {
+    courseCode: 'math3001',
+    supplementaryInfo_sv: '',
+    supplementaryInfo_en: 'supplementaryInfo_en_3',
+    courseDisposition_sv: '',
+    courseDisposition_en: '',
+  },
+]
+
 const unfilteredCourseInfos = [
   ...filteredCourseInfos,
   {
@@ -63,10 +87,36 @@ const unfilteredCourseInfos = [
   },
 ]
 
+const unfilteredSupplementaryInfos = [
+  ...unfilteredCourseInfos,
+  {
+    courseCode: 'chem6001',
+    supplementaryInfo_sv: 'NULL',
+    supplementaryInfo_en: '',
+    courseDisposition_sv: '',
+    courseDisposition_en: '',
+  },
+  {
+    courseCode: 'chem6001',
+    supplementaryInfo_sv: '',
+    supplementaryInfo_en: 'NULL',
+    courseDisposition_sv: '',
+    courseDisposition_en: '',
+  },
+]
+
 describe('filterEmptyCourseInfos', () => {
   test('filters courseInfos', () => {
     const result = filterEmptyCourseInfos(unfilteredCourseInfos)
 
     expect(result).toEqual(filteredCourseInfos)
+  })
+})
+
+describe('filterEmptySupplementaryInfos', () => {
+  test('filters courseInfos', () => {
+    const result = filterEmptySupplementaryInfos(unfilteredSupplementaryInfos)
+
+    expect(result).toEqual(filteredSupplementaryInfos)
   })
 })
