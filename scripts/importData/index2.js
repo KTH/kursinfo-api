@@ -22,11 +22,15 @@ const csvConfig = {
 const handleCSV = async file => {
   const rawCSV = await readCSV(file, csvConfig)
 
-  log.info(`Found ${rawCSV.length} courses over all`)
+  log.info(`Found ${rawCSV.length} courses over all.`)
 
-  const filteredList = filterEmptySupplementaryInfos(rawCSV)
+  const onlyCancelled = rawCSV.filter(({ state }) => state === 'CANCELLED')
 
-  log.info(`Found ${filteredList.length} courses with non-empty supplementaryInfos`)
+  log.info(`Found ${onlyCancelled.length} cancelled courses.`)
+
+  const filteredList = filterEmptySupplementaryInfos(onlyCancelled)
+
+  log.info(`Found ${filteredList.length} courses with non-empty supplementaryInfos.`)
 
   const distinctCourseCodes = filteredList.reduce((courseCodes, { courseCode }) => {
     if (!courseCodes.includes(courseCode)) {
@@ -38,12 +42,14 @@ const handleCSV = async file => {
   log.info(`Found ${distinctCourseCodes.length} distinct courseCodes.`)
 
   const courseInfosByCourseCode = distinctCourseCodes.map(courseCode => {
-    return rawCSV.filter(courseInfo => courseInfo.courseCode === courseCode)
+    return filteredList.filter(courseInfo => courseInfo.courseCode === courseCode)
   })
 
   const latestCourseInfos = courseInfosByCourseCode.map(courseInfos => {
     const { courseCode, supplementaryInfo_sv, supplementaryInfo_en } = sortCourseInfos(courseInfos)[0]
 
+    // THIS IS IMPORTANT!
+    // Here we choose the fields that will be written into the DB
     return {
       courseCode,
       supplementaryInfo_sv: emptyStringIfNull(supplementaryInfo_sv),
@@ -58,12 +64,16 @@ const handleCSV = async file => {
   const successful = result.filter(({ success }) => success)
   const failed = result.filter(({ success }) => !success)
 
+  const updated = result.filter(({ operation }) => operation === 'update').map(({ courseCode }) => courseCode)
+
   log.info('-------')
   log.info(`Extracted ${rawCSV.length} courses over all`)
+  log.info(`Extracted ${onlyCancelled.length} cancelled courses.`)
   log.info(`Extracted ${filteredList.length} courses with non-empty texts`)
   log.info(`Handled ${result.length} courseInfos`)
   log.info(`${successful.length} successful`)
   log.info(`${failed.length} failed`)
+  log.info(`Updated courses: ${updated.join(', ')}`)
   log.info('-------')
 
   if (failed.length) {
