@@ -49,9 +49,4 @@ module.exports = {
       useAccessLog: safeGet(() => getEnv('LOGGING_ACCESS_LOG'), 'true') === 'true',
     },
   },
-
-  // Custom app settings
-  appInsights: {
-    instrumentationKey: getEnv('APPINSIGHTS_INSTRUMENTATIONKEY'),
-  },
 }
