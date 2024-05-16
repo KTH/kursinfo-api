@@ -43,9 +43,7 @@ Only admin pages may change API data while public pages can only read. Therefore
 
 ### Secrets for Development
 
-Secrets during local development are ALWAYS stored in a `.env`-file in the root of your project. This file should be in .gitignore. This file should be in .gitignore. MONGODB_URI is usually uses db in azure, but it also goes to use localhost mongo, it have a default value in `config/serverSettings.js`
-
-These settings are also available in an `env.in` file.
+Secrets during local development are stored in a gitignored `.env` file (`env.in` can be used as template for your `.env` file). More details about environment variable setup and secrets can be found in [confluence](https://confluence.sys.kth.se/confluence/x/OYKBDQ).
 
 ## Prepare Database in Azure
 
