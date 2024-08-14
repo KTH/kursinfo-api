@@ -9,6 +9,8 @@ const dbFormatDoc = {
   courseDisposition_sv: 'courseDisposition text sv',
   supplementaryInfo_en: 'supplmentaryInfo text en',
   supplementaryInfo_sv: 'supplmentaryInfo text sv',
+  recommendedPrerequisites_en: 'recommendedPrerequisites text en',
+  recommendedPrerequisites_sv: 'recommendedPrerequisites text sv',
   sellingTextAuthor: 'Ada Lovelace',
   imageInfo: 'someImageInfo',
 }
@@ -18,6 +20,7 @@ const clientFormatDoc = {
   sellingText: { en: 'fooEN', sv: 'fooSV' },
   courseDisposition: { en: 'courseDisposition text en', sv: 'courseDisposition text sv' },
   supplementaryInfo: { en: 'supplmentaryInfo text en', sv: 'supplmentaryInfo text sv' },
+  recommendedPrerequisites: { en: 'recommendedPrerequisites text en', sv: 'recommendedPrerequisites text sv' },
   lastChangedBy: 'Ada Lovelace',
   imageInfo: 'someImageInfo',
 }
@@ -27,6 +30,7 @@ const clientFormatExtraFieldsDoc = {
   sellingText: { en: 'fooEN', sv: 'fooSV' },
   courseDisposition: { en: 'courseDisposition text en', sv: 'courseDisposition text sv' },
   supplementaryInfo: { en: 'supplmentaryInfo text en', sv: 'supplmentaryInfo text sv' },
+  recommendedPrerequisites: { en: 'recommendedPrerequisites text en', sv: 'recommendedPrerequisites text sv' },
   lastChangedBy: 'Ada Lovelace',
   imageInfo: 'someImageInfo',
   extraField: 'extra field info',
@@ -37,6 +41,7 @@ const clientFormatNullFieldsDoc = {
   sellingText: { en: 'fooEN', sv: 'fooSV' },
   courseDisposition: { en: 'courseDisposition text en', sv: 'courseDisposition text sv' },
   supplementaryInfo: { en: null, sv: null },
+  recommendedPrerequisites: { en: 'recommendedPrerequisites text en', sv: 'recommendedPrerequisites text sv' },
   lastChangedBy: 'Ada Lovelace',
   imageInfo: 'someImageInfo',
 }
@@ -45,6 +50,7 @@ const clientFormatMissingFieldsDoc = {
   courseCode: 'SF1624',
   sellingText: { en: 'fooEN', sv: 'fooSV' },
   courseDisposition: { en: 'courseDisposition text en', sv: 'courseDisposition text sv' },
+  recommendedPrerequisites: { en: 'recommendedPrerequisites text en', sv: 'recommendedPrerequisites text sv' },
   lastChangedBy: 'Ada Lovelace',
   imageInfo: 'someImageInfo',
   extraField: 'extra field info',
@@ -57,6 +63,8 @@ const dbFormatEmptyFields = {
   courseDisposition_sv: 'courseDisposition text sv',
   supplementaryInfo_en: undefined,
   supplementaryInfo_sv: undefined,
+  recommendedPrerequisites_en: 'recommendedPrerequisites text en',
+  recommendedPrerequisites_sv: 'recommendedPrerequisites text sv',
   sellingTextAuthor: 'Ada Lovelace',
   imageInfo: 'someImageInfo',
 }
@@ -69,6 +77,8 @@ const dbFormatExtraFieldsDoc = {
   courseDisposition_sv: 'courseDisposition text sv',
   supplementaryInfo_en: 'supplmentaryInfo text en',
   supplementaryInfo_sv: 'supplmentaryInfo text sv',
+  recommendedPrerequisites_en: 'recommendedPrerequisites text en',
+  recommendedPrerequisites_sv: 'recommendedPrerequisites text sv',
   sellingTextAuthor: 'Ada Lovelace',
   imageInfo: 'someImageInfo',
   extraField: 'extraInfo',
@@ -80,6 +90,8 @@ const dbFormatMissingFields = {
   sellingText_sv: 'fooSV',
   courseDisposition_en: 'courseDisposition text en',
   courseDisposition_sv: 'courseDisposition text sv',
+  recommendedPrerequisites_en: 'recommendedPrerequisites text en',
+  recommendedPrerequisites_sv: 'recommendedPrerequisites text sv',
   sellingTextAuthor: 'Ada Lovelace',
   imageInfo: 'someImageInfo',
 }
@@ -89,6 +101,7 @@ const clientFormatEmptyFieldsDoc = {
   sellingText: { en: 'fooEN', sv: 'fooSV' },
   courseDisposition: { en: 'courseDisposition text en', sv: 'courseDisposition text sv' },
   supplementaryInfo: { en: '', sv: '' },
+  recommendedPrerequisites: { en: 'recommendedPrerequisites text en', sv: 'recommendedPrerequisites text sv' },
   lastChangedBy: 'Ada Lovelace',
   imageInfo: 'someImageInfo',
 }
@@ -97,6 +110,7 @@ const correctClientFormatPatch = {
   sellingText: { en: 'fooEN', sv: 'fooSV' },
   courseDisposition: { en: 'courseDisposition text en', sv: 'courseDisposition text sv' },
   supplementaryInfo: { en: 'some Supplementary info', sv: 'övrig information' },
+  recommendedPrerequisites: { en: 'Recommended prerequisites', sv: 'Rekommenderade förkunskaper' },
   lastChangedBy: 'Ada Lovelace',
   imageInfo: 'someImageInfo',
 }
@@ -108,6 +122,8 @@ const expectedDBFormatPatch = {
   courseDisposition_sv: 'courseDisposition text sv',
   supplementaryInfo_en: 'some Supplementary info',
   supplementaryInfo_sv: 'övrig information',
+  recommendedPrerequisites_en: 'Recommended prerequisites',
+  recommendedPrerequisites_sv: 'Rekommenderade förkunskaper',
   sellingTextAuthor: 'Ada Lovelace',
   imageInfo: 'someImageInfo',
 }

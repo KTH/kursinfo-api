@@ -14,6 +14,8 @@ const csvConfig = {
     'validToTerm',
     'courseDisposition_sv',
     'courseDisposition_en',
+    'recommendedPrerequisites_sv',
+    'recommendedPrerequisites_en',
     'supplementaryInfo_sv',
     'supplementaryInfo_en',
   ],

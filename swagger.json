@@ -330,6 +330,19 @@
             }
           }
         },
+        "recommendedPrerequisites": {
+          "type": "object",
+          "properties": {
+            "en": {
+              "type": "string",
+              "description": "Recommended prerequisites in English."
+            },
+            "sv": {
+              "type": "string",
+              "description": "Recommended prerequisites in in Swedish."
+            }
+          }
+        },
         "supplementaryInfo": {
           "type": "object",
           "properties": {
