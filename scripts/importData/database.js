@@ -1,5 +1,8 @@
 const log = require('@kth/log')
 const nodeMongo = require('@kth/mongo')
+const dotenv = require('dotenv')
+
+dotenv.config()
 
 const mongoOptions = {
   ssl: process.env.MONGODB_SSL,

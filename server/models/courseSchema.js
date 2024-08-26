@@ -62,6 +62,22 @@ module.exports = mongoose.Schema(
       maxlength: [10000, 'Text must have at most 10000 characters.'],
       default: '',
     },
+    prerequisites_en: {
+      type: String,
+      required: [false, 'If no prerequisites are given, no heading or text will be shown.'],
+      trim: true,
+      minlength: 0,
+      maxlength: [10000, 'Text must have at most 10000 characters.'],
+      default: '',
+    },
+    prerequisites_sv: {
+      type: String,
+      required: [false, 'If no prerequisites are given, no heading or text will be shown.'],
+      trim: true,
+      minlength: 0,
+      maxlength: [10000, 'Text must have at most 10000 characters.'],
+      default: '',
+    },
     courseDisposition_en: {
       type: String,
       required: [false, 'If no courseDisposition is given, no heading or text will be shown.'],
