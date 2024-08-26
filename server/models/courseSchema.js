@@ -62,7 +62,7 @@ module.exports = mongoose.Schema(
       maxlength: [10000, 'Text must have at most 10000 characters.'],
       default: '',
     },
-    prerequisites_en: {
+    recommendedPrerequisites_en: {
       type: String,
       required: [false, 'If no prerequisites are given, no heading or text will be shown.'],
       trim: true,
@@ -70,7 +70,7 @@ module.exports = mongoose.Schema(
       maxlength: [10000, 'Text must have at most 10000 characters.'],
       default: '',
     },
-    prerequisites_sv: {
+    recommendedPrerequisites_sv: {
       type: String,
       required: [false, 'If no prerequisites are given, no heading or text will be shown.'],
       trim: true,
@@ -89,22 +89,6 @@ module.exports = mongoose.Schema(
     courseDisposition_sv: {
       type: String,
       required: [false, 'If no courseDisposition is given, no heading or text will be shown.'],
-      trim: true,
-      minlength: 0,
-      maxlength: [10000, 'Text must have at most 10000 characters.'],
-      default: '',
-    },
-    recommendedPrerequisites_en: {
-      type: String,
-      required: [false, 'If no recommendedPrerequisites is given, no heading or text will be shown.'],
-      trim: true,
-      minlength: 0,
-      maxlength: [10000, 'Text must have at most 10000 characters.'],
-      default: '',
-    },
-    recommendedPrerequisites_sv: {
-      type: String,
-      required: [false, 'If no recommendedPrerequisites is given, no heading or text will be shown.'],
       trim: true,
       minlength: 0,
       maxlength: [10000, 'Text must have at most 10000 characters.'],
