@@ -5,7 +5,7 @@ const { readCSV, setupLogging, setupDatabase, tryToGetPathToFileFromParams } = r
 
 const csvConfig = {
   separator: ',',
-  headers: ['courseCode', 'prerequisites_sv', 'prerequisites_en'],
+  headers: ['courseCode', 'recommendedPrerequisites_sv', 'recommendedPrerequisites_en'],
 }
 
 const handleCSV = async file => {

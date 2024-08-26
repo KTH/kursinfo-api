@@ -62,7 +62,7 @@ module.exports = mongoose.Schema(
       maxlength: [10000, 'Text must have at most 10000 characters.'],
       default: '',
     },
-    prerequisites_en: {
+    recommendedPrerequisites_en: {
       type: String,
       required: [false, 'If no prerequisites are given, no heading or text will be shown.'],
       trim: true,
@@ -70,7 +70,7 @@ module.exports = mongoose.Schema(
       maxlength: [10000, 'Text must have at most 10000 characters.'],
       default: '',
     },
-    prerequisites_sv: {
+    recommendedPrerequisites_sv: {
       type: String,
       required: [false, 'If no prerequisites are given, no heading or text will be shown.'],
       trim: true,
@@ -117,6 +117,16 @@ module.exports.pre('save', next => {
   if (this.courseDisposition_en) {
     if (safeGet(() => this.courseDisposition_en)) {
       this.courseDisposition_en = sanitize(this.courseDisposition_en)
+    }
+  }
+  if (this.recommendedPrerequisites_sv) {
+    if (safeGet(() => this.recommendedPrerequisites_sv)) {
+      this.recommendedPrerequisites_sv = sanitize(this.recommendedPrerequisites_sv)
+    }
+  }
+  if (this.recommendedPrerequisites_en) {
+    if (safeGet(() => this.recommendedPrerequisites_en)) {
+      this.recommendedPrerequisites_en = sanitize(this.recommendedPrerequisites_en)
     }
   }
   if (this.supplementaryInfo_sv) {
