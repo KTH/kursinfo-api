@@ -1,5 +1,5 @@
 const log = require('@kth/log')
-const { filterEmptyCourseInfos } = require('./filterEmptyCourseInfos')
+const { filterEmptyPrerequisites } = require('./filterEmptyCourseInfos')
 const { handleArrayOfCourseInfos } = require('./handleArrayOfCourseInfos')
 const { readCSV, setupLogging, setupDatabase, tryToGetPathToFileFromParams } = require('./utils')
 
@@ -13,7 +13,7 @@ const handleCSV = async file => {
 
   log.info(`Extracted ${rawCSV.length} courses over all`)
 
-  const filteredList = filterEmptyCourseInfos(rawCSV)
+  const filteredList = filterEmptyPrerequisites(rawCSV)
 
   log.info(`Extracted ${filteredList.length} courses with non-empty texts`)
 

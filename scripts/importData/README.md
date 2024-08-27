@@ -106,7 +106,7 @@ IMPORTANT: Call it from the project root!
 
 ## Script to import recommendedPrerequisites directly into MongoB
 
-This script can be used to import a CSV containing supplementaryInfo. It does clean `NULL` values.
+This script can be used to import a CSV containing recommendedPrerequisites. It does clean `NULL` values.
 
 ### Data
 
