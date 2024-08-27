@@ -1,15 +1,15 @@
 const filterEmptyCourseInfos = courseInfos => {
-  const EMPTY_VALUES = ['', 'NULL']
-
-  return courseInfos.filter(({ courseCode, recommendedPrerequisites_sv, prerequisites_en }) => {
-    if (!courseCode) {
-      return false
+  return courseInfos.filter(
+    ({ courseCode, supplementaryInfo_sv, supplementaryInfo_en, courseDisposition_sv, courseDisposition_en }) => {
+      if (!courseCode) {
+        return false
+      }
+      if (!supplementaryInfo_sv && !supplementaryInfo_en && !courseDisposition_sv && !courseDisposition_en) {
+        return false
+      }
+      return true
     }
-    if (EMPTY_VALUES.includes(recommendedPrerequisites_sv) && EMPTY_VALUES.includes(recommendedPrerequisites_en)) {
-      return false
-    }
-    return true
-  })
+  )
 }
 
 const filterEmptySupplementaryInfos = courseInfos => {
