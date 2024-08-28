@@ -1,4 +1,9 @@
-const { filterEmptyCourseInfos, filterEmptySupplementaryInfos } = require('../importData/filterEmptyCourseInfos')
+const { recommendedPrerequisites_sv } = require('../../server/models/courseSchema')
+const {
+  filterEmptyCourseInfos,
+  filterEmptySupplementaryInfos,
+  filterEmptyPrerequisites,
+} = require('../importData/filterEmptyCourseInfos')
 
 const filteredCourseInfos = [
   {
@@ -61,6 +66,23 @@ const filteredSupplementaryInfos = [
     courseDisposition_en: '',
   },
 ]
+const filteredPrerequisites = [
+  {
+    courseCode: 'chem6002',
+    recommendedPrerequisites_sv: 'recommendedPrerequisites_sv_2',
+    recommendedPrerequisites_en: 'recommendedPrerequisites_en_2',
+  },
+  {
+    courseCode: 'chem6003',
+    recommendedPrerequisites_sv: 'recommendedPrerequisites_sv_3',
+    recommendedPrerequisites_en: 'recommendedPrerequisites_en_3',
+  },
+  {
+    courseCode: 'chem6004',
+    recommendedPrerequisites_sv: 'recommendedPrerequisites_sv_4',
+    recommendedPrerequisites_en: 'NULL',
+  },
+]
 
 const unfilteredCourseInfos = [
   ...filteredCourseInfos,
@@ -104,6 +126,33 @@ const unfilteredSupplementaryInfos = [
     courseDisposition_en: '',
   },
 ]
+const unfilteredPrerequisites = [
+  {
+    courseCode: 'chem6001',
+    recommendedPrerequisites_sv: 'NULL',
+    recommendedPrerequisites_en: '',
+  },
+  {
+    courseCode: 'chem6002',
+    recommendedPrerequisites_sv: 'recommendedPrerequisites_sv_2',
+    recommendedPrerequisites_en: 'recommendedPrerequisites_en_2',
+  },
+  {
+    courseCode: 'chem6003',
+    recommendedPrerequisites_sv: 'recommendedPrerequisites_sv_3',
+    recommendedPrerequisites_en: 'recommendedPrerequisites_en_3',
+  },
+  {
+    courseCode: 'chem6004',
+    recommendedPrerequisites_sv: 'recommendedPrerequisites_sv_4',
+    recommendedPrerequisites_en: 'NULL',
+  },
+  {
+    courseCode: 'chem6004',
+    recommendedPrerequisites_sv: '',
+    recommendedPrerequisites_en: '',
+  },
+]
 
 describe('filterEmptyCourseInfos', () => {
   test('filters courseInfos', () => {
@@ -118,5 +167,12 @@ describe('filterEmptySupplementaryInfos', () => {
     const result = filterEmptySupplementaryInfos(unfilteredSupplementaryInfos)
 
     expect(result).toEqual(filteredSupplementaryInfos)
+  })
+})
+describe('filterEmptyPrerequisites', () => {
+  test('filters recommendedPrerequisites', () => {
+    const result = filterEmptyPrerequisites(unfilteredPrerequisites)
+
+    expect(result).toEqual(filteredPrerequisites)
   })
 })
