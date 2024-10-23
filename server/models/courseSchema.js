@@ -121,12 +121,12 @@ module.exports.pre('save', next => {
   }
   if (this.recommendedPrerequisites_sv) {
     if (safeGet(() => this.recommendedPrerequisites_sv)) {
-      this.supplementaryInfo_sv = sanitize(this.recommendedPrerequisites_sv)
+      this.recommendedPrerequisites_sv = sanitize(this.recommendedPrerequisites_sv)
     }
   }
   if (this.recommendedPrerequisites_en) {
     if (safeGet(() => this.recommendedPrerequisites_en)) {
-      this.supplementaryInfo_en = sanitize(this.recommendedPrerequisites_en)
+      this.recommendedPrerequisites_en = sanitize(this.recommendedPrerequisites_en)
     }
   }
   if (this.supplementaryInfo_sv) {

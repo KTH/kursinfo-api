@@ -103,3 +103,33 @@ IMPORTANT: Call it from the project root!
 ```sh
 ./scripts/importSupplementaryInfo.sh ./data/2024-03-07-test.csv
 ```
+
+## Script to import recommendedPrerequisites directly into MongoB
+
+This script can be used to import a CSV containing recommendedPrerequisites. It does clean `NULL` values.
+
+### Data
+
+The script expects a CSV file
+
+- with a comma `,` as separator.
+- without headers
+- with the columns specified in the function [readCSV](./index3.js)
+
+```js
+headers: [
+            'courseCode',
+            'recommendedPrerequisites_sv',
+            'recommendedPrerequisites_en',
+          ],
+```
+
+### Usage
+
+Call `importRecommendedPrerequisites.sh` and pass the path to the file you want to import.
+
+IMPORTANT: Call it from the project root!
+
+```sh
+./scripts/importRecommendedPrerequisites.sh ./data/2024-03-07-test.csv
+```
