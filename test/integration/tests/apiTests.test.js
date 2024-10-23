@@ -79,6 +79,10 @@ const expected = {
     en: '',
     sv: '',
   },
+  recommendedPrerequisites: {
+    en: '',
+    sv: '',
+  },
   courseDisposition: {
     en: '',
     sv: '',
