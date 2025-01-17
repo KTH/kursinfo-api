@@ -1,0 +1,18 @@
+services:
+  api:
+    image: kthregistry.azurecr.io/kth-nodejs-20:latest
+    platform: linux/amd64
+    # Existing image in repository
+    # image: kthse/docker pull kthse/kth-nodejs-api:13.37
+
+    # Build from Dockerfile in current directory
+    build: .
+
+    # Configuration
+    environment:
+       SOME_KEY : "a-value"
+       SOME_OTHER_KEY : "my-value"
+
+    # Port published from inside the Docker image
+    ports:
+      - 3001
